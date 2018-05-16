@@ -1,6 +1,132 @@
 ## 手动创建IPFS私有网络
 
+**一 环境准备**
 
+A：本地节点（Mac）
+
+IP: 动态IP
+
+ipfs 节点ID：QmTrRNgt6M9syRq8ZqM4o92Fgh6avK8v862n2QZLyDPywY
+
+B：亚马逊AWS
+
+IP：13.230.162.124
+
+ipfs节点：QmRQH6TCCq1zpmjdPKg2m7BrbVvkJ4UwnNHWD6ANLqrdws
+
+C: 亚马逊AWS
+
+IP：13.231.247.2
+
+ipfs 节点：QmTTEkgUpZJypqw2fXKagxFxxhvoNsqfs5YJ9zHLBoEE29
+
+D: 亚马逊AWS
+
+IP：13.114.30.87
+
+ipfs节点：Qmc2AH2MkZtwa11LcpHGE8zW4noQrn6xue7VcZCMNYTpuP
+
+**二 共享密钥**
+
+私有网络所有的节点必须共享同一个密钥，注意不要忘记这一点。
+
+首先我们使用密钥创建工具，创建一个密钥。
+
+*下载地址：https://github.com/Kubuxu/go-ipfs-swarm-key-gen*
+
+该工具的安装下载使用go。不会安装的朋友自行Google，本文不在讲解。
+
+```
+go get -u github.com/Kubuxu/go-ipfs-swarm-key-gen/ipfs-swarm-key-gen1
+```
+
+然后创建密钥：
+
+```
+ipfs-swarm-key-gen > ~/.ipfs/swarm.key1
+```
+
+注意：小编创建完密钥放在了自己的ipfs默认配置文件夹下面（~/.ipfs/）
+
+**三 上传密钥到B，C，D的节点上面**
+
+小编直接使用了scp上传到了其他三台亚马逊的服务器上面：
+
+```
+scp -i ss-server.pem ~/.ipfs/swarm.key ubuntu@13.114.30.87:~/.ipfs/1
+```
+
+```
+scp -i ss-server.pem ~/.ipfs/swarm.key ubuntu@13.230.162.124:~/.ipfs/1
+```
+
+```
+scp -i ss-server.pem ~/.ipfs/swarm.key ubuntu@13.231.247.2:~/.ipfs/1
+```
+
+由于小编的亚马逊服务器ipfs节点初始化的时候都是采用的默认设置(ipfs init)
+
+所以把密钥放到 ~/.ipfs/ 这个文件夹下面就可以了。
+
+**四 添加启动节点**
+
+ipfs init后的默认启动节点是连接ipfs公网的节点，如果要连接私有网络
+
+在每一个节点执行下面的操作，删除掉所有的默认启动节点。
+
+```
+ipfs bootstrap rm —all1
+```
+
+然后添加一个自己的默认节点(私有网络中的一个节点)，默认节点可以是A，B，C，D中的任何一个。
+
+我们选取了D节点作为启动节点，在A，B，C节点执行下面的操作，把D节点的地址添加到A，B，C节点里面。
+
+```
+ipfs bootstrap add/ip4/13.114.30.87/tcp/4001/ipfs/Qmc2AH2MkZtwa11LcpHGE8zW4noQrn6xue7VcZCMNYTpuP
+
+```
+
+**五 启动并查看各个节点**
+
+![image-20180515220512401](/var/folders/x6/p_w__rzj5l91r8ygv0qrd99w0000gn/T/abnerworks.Typora/image-20180515220512401.png)
+
+ 
+
+我们发现四个节点相互链接在了一起，这就是我们**私有ipfs网络**。小编测试的过程中发现四个节点的链接非常的快速，即便是本地节点(北京的家庭网络)和东京区域的AWS网络之间的连接也非常的快，IPFS的网络连通性依然还是这么优秀。
+
+下面我在私有网络里面做一些简单的测试：
+
+我们在本地节点A上面数据：
+
+```
+tt-3:Downloads tt$ ipfs add Brave-0.20.42.dmg
+added QmbZ7NWHbP5edCF4BvSvfW97MdpZhcwZ3WJTp3Cd3od9Vg Brave-0.20.42.dmg12
+```
+
+在其他几个节点下载数据：
+
+```
+ubuntu@ip-172-31-26-222:~/ipfs$ ipfs get QmbZ7NWHbP5edCF4BvSvfW97MdpZhcwZ3WJTp3Cd3od9Vg
+Saving file(s) to QmbZ7NWHbP5edCF4BvSvfW97MdpZhcwZ3WJTp3Cd3od9Vg
+149.80 MB / 149.80 MB [=======================================] 100.00% 2m58123
+```
+
+```
+ubuntu@ip-172-31-18-30:~$ ipfs get QmbZ7NWHbP5edCF4BvSvfW97MdpZhcwZ3WJTp3Cd3od9Vg
+Saving file(s) to QmbZ7NWHbP5edCF4BvSvfW97MdpZhcwZ3WJTp3Cd3od9Vg
+149.80 MB / 149.80 MB [=======================================] 100.00% 2m58s123
+```
+
+```
+ubuntu@ip-172-31-16-152:~$ ipfs get QmbZ7NWHbP5edCF4BvSvfW97MdpZhcwZ3WJTp3Cd3od9Vg
+Saving file(s) to QmbZ7NWHbP5edCF4BvSvfW97MdpZhcwZ3WJTp3Cd3od9Vg
+149.80 MB / 149.80 MB [=========================================] 100.00% 2s123
+```
+
+从上面的测试可以看出来，小编首先在本地节点（Mac）上面add了文件 QmbZ7NWHbP5edCF4BvSvfW97MdpZhcwZ3WJTp3Cd3od9Vg。
+
+然后在亚马逊的机子（位于日本东京区域）进行文件下载。150M的文件在前两个节点上面下载使用了 2分58秒。而在第三个节点上下载仅仅使用了2秒。
 
 
 
