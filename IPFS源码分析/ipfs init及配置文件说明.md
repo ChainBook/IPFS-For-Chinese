@@ -48,7 +48,7 @@
    3. 底层文件目录：$IPFS_PATH/go-ipfs/repo/config/init.go Init()函数
    ```
 
-   ![image-20180514152321677](/var/folders/x6/p_w__rzj5l91r8ygv0qrd99w0000gn/T/abnerworks.Typora/image-20180514152321677.png)
+   ![WX20180521-180050](../PIC/WX20180521-180050.png)
 
 
 
