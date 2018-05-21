@@ -135,15 +135,15 @@
 
 ## 热度趋势分布(google trend)
 
-![WechatIMG167](/Users/geeker/workspace/ChainBook/IPFS/PIC/WechatIMG167.jpeg)
+![WechatIMG167](../PIC/WechatIMG167.jpeg)
 
 
 
-![WX20180518-130548@2x](/Users/geeker/workspace/ChainBook/IPFS/PIC/WX20180518-130548@2x.png)
+![WX20180518-130548@2x](../PIC/WX20180518-130548@2x.png)
 
-![WX20180518-130616@2x](/Users/geeker/workspace/ChainBook/IPFS/PIC/WX20180518-130616@2x.png)【加入siacoin后的分布图】
+![WX20180518-130616@2x](../PIC/WX20180518-130616@2x.png)【加入siacoin后的分布图】
 
-![WX20180518-130728@2x](/Users/geeker/workspace/ChainBook/IPFS/PIC/WX20180518-130728@2x.png)
+![WX20180518-130728@2x](../PIC/WX20180518-130728@2x.png)
 
 > 注：就目前而言，holochain和burstcoin的google搜索流量极低，故没统计；
 
@@ -241,9 +241,9 @@
 
 【中国区热度趋势】
 
-![WX20180518-142054](/Users/geeker/workspace/ChainBook/IPFS/PIC/WX20180518-142054.png)
+![WX20180518-142054](../PIC/WX20180518-142054.png)
 
-![WX20180518-142130](/Users/geeker/workspace/ChainBook/IPFS/PIC/WX20180518-142130.png)
+![WX20180518-142130](../PIC/WX20180518-142130.png)
 
 ```
 结论：国内对ipfs的关注远超过其他分布式存储系统；
