@@ -89,9 +89,7 @@ ipfs bootstrap add/ip4/13.114.30.87/tcp/4001/ipfs/Qmc2AH2MkZtwa11LcpHGE8zW4noQrn
 
 **五 启动并查看各个节点**
 
-![image-20180515220512401](/var/folders/x6/p_w__rzj5l91r8ygv0qrd99w0000gn/T/abnerworks.Typora/image-20180515220512401.png)
-
- 
+![WX20180521-214421@2x](../PIC/WX20180521-214421@2x.png)
 
 我们发现四个节点相互链接在了一起，这就是我们**私有ipfs网络**。小编测试的过程中发现四个节点的链接非常的快速，即便是本地节点(北京的家庭网络)和东京区域的AWS网络之间的连接也非常的快，IPFS的网络连通性依然还是这么优秀。
 
@@ -238,7 +236,7 @@ added QmPxebZuW2pgfzj5JWq22KUzxStmqQ6i7YUK9Sq9xepXT9 b3log
 
 这样我们使用 `ipfs cat /ipfs/Qmco94dYP733XwrUqFUhDtDG8RsqmGQ6UDPvnmH4Pvy2rv` 就可以查看 README.md 了。在其他节点上也可以，只要记住这个文件的哈希值就行了。我们可以在自己的 HTTP 网关上试试（注意我的端口改成了 5002，你的默认应该是 8080）：
 
-![9070383bdece4f6792a561c7b4fa98c4-image.png]() 
+![WX20180521-214722@2x](../PIC/WX20180521-214722@2x.png)
 
 当然也可以用 ipfs 官方的 HTTP 网关：[https://ipfs.io/ipfs/Qmco94dYP733XwrUqFUhDtDG8RsqmGQ6UDPvnmH4Pvy2rv](https://hacpai.com/forward?goto=https%3A%2F%2Fipfs.io%2Fipfs%2FQmco94dYP733XwrUqFUhDtDG8RsqmGQ6UDPvnmH4Pvy2rv)
 

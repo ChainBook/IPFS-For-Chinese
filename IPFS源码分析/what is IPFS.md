@@ -1,4 +1,4 @@
-##IPFS -- Inter-Planetary File system
+## IPFS -- Inter-Planetary File system
 
 IPFS is a global, versioned, peer-to-peer filesystem. It combines good ideas
 from Git, BitTorrent, Kademlia, SFS, and the Web. It is like a single bit-
@@ -6,25 +6,25 @@ torrent swarm, exchanging git objects. IPFS provides an interface as simple
 as the HTTP web, but with permanence built in. You can also mount the world
 at /ipfs.
 
-##IPFS is a protocol:
+##  IPFS is a protocol:
 
 - defines a content-addressed file system
 - coordinates content delivery
 - combines Kademlia + BitTorrent + Git
 
-## IPFS is a filesystem:
+##  IPFS is a filesystem:
 
 - has directories and files
 - mountable filesystem (via FUSE)
 
-##IPFS is a web:
+##  IPFS is a web:
 
 - can be used to view documents like the web
 - files accessible via HTTP at `http://ipfs.io/<path>`
 - browsers or extensions can learn to use `ipfs://` directly
 - hash-addressed content guarantees authenticity
 
-##IPFS is modular:
+##  IPFS is modular:
 
 - connection layer over any network protocol
 - routing layer
@@ -32,26 +32,26 @@ at /ipfs.
 - uses a path-based naming service
 - uses bittorrent-inspired block exchange
 
-##IPFS uses crypto:
+##  IPFS uses crypto:
 
 - cryptographic-hash content addressing
 - block-level deduplication
 - file integrity + versioning
 - filesystem-level encryption + signing support
 
-##IPFS is p2p:
+##  IPFS is p2p:
 
 - worldwide peer-to-peer file transfers
 - completely decentralized architecture
 - **no** central point of failure
 
-##IPFS is a cdn:
+##  IPFS is a cdn:
 
 - add a file to the filesystem locally, and it's now available to the world
 - caching-friendly (content-hash naming)
 - bittorrent-based bandwidth distribution
 
-##IPFS has a name service:
+##  IPFS has a name service:
 
 - IPNS, an SFS inspired name system
 - global namespace based on PKI
