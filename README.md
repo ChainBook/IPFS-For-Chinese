@@ -27,7 +27,8 @@ IPFS竞品分析目录
 IPFS理论基础目录
 
 ```
-该目录包含了IPFS所需要的理论基础，包括Bittorrent、DAG、Git、SFS等
+该目录包含了IPFS所需要的理论基础，包括Bittorrent、DAG、Git、SFS等;
+该目录下有一个子目录：存储证明论文，收录了部分存储证明相关的论文;
 ```
 
 
