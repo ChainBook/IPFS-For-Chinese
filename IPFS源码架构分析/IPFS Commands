@@ -1,0 +1,2194 @@
+IPFS指令集中文版——IPFS版本：0.4.14
+翻译：IPFS方得社区|崔长泽、MithellSoo
+2018年4月
+
+1、	ipfs
+用法
+ipfs - 全球p2p默克尔有向无环图文件系统。
+使用范例
+ipfs [--config=<config> | -c] [--debug=<debug> | -D] [--help=<help>] [-h=<h>] [--local=<local> | -L] [--api=<api>] <command> ...
+选项
+选项标识	      选项类型	  介绍
+-c, --config	  string	  配置文件路径
+-D, --debug	    bool	    以debug模式操作，缺省为false
+--help	        bool	    展示完整的命令帮助文档，缺省为false
+-h	            bool	    展示精简版的命令帮助文档，缺省为false
+-L, --local	    bool	    在本地运行命令，缺省为false
+--api	          string	  使用具体的API实例（缺省为/ip4/127.0.0.1/tcp/5001）
+子命令
+基本命令
+命令	        介绍
+init	        初始化IPFS本地配置
+Add <path>	  添加一个文件到IPFS
+cat <ref>	    展示IPFS对象数据
+get <ref>	    下载IPFS对象
+ls <ref>	    从一个对象中列出链接
+Refs <ref>	  从一个对象中列出链接哈希
+数据结构命令
+命令	    介绍
+block	    与数据存储中的原始块交互
+object	  与原始DAG节点交互
+files	    将对象抽象为unix文件系统，并与对象交互
+dag	      与IPLD文件交互(实验中)
+高级命令
+命令	      介绍
+daemon	    开启一个开始运行的后台进程
+mount	      挂载一个IPFS只读的挂载点
+resolve	    解析任何类型的名字
+name	      发布并解析IPNS名字
+key	        创建并列出IPNS名字密钥对
+dns	        解析DNS链接
+pin	        将对象锁定到本地存储
+repo	      操纵IPFS仓库
+stats	      各种操作状态
+filestore	  管理文件仓库(实验中)
+网络命令
+命令	      介绍
+id	        展示IPFS节点信息
+bootstrap	  添加或删除引导节点
+swarm	      管理p2p网络连接
+dht	        请求有关值或节点的分布式哈希表
+ping	      测量一个连接的延迟
+diag	      打印诊断信息
+工具命令
+命令	      介绍
+config	    管理配置
+version	    展示IPFS版本信息
+update	    下载并应用go-ipfs更新
+commands	  列出所有可用命令
+使用“ipfs <命令> --help”来了解关于每个命令的详细信息。
+IPFS在本地文件系统中一个仓库，其默认位置为~/.ipfs，可以通过设置环境变量IPFS_PATH改变仓库位置：
+1.	export IPFS_PATH=/path/to/ipfsrepo 
+输出状态
+命令行将以下面的两者之一结束：
+•	0 执行成功
+•	1 执行失败
+使用“ipfs <子命令> –help”获得关于每个命令的更多信息。
+
+
+2、	ipfs add
+用法
+ipfs add <path> ... - 添加一个文件或目录到IPFS。
+使用范例
+ipfs add [--recursive | -r] [--quiet | -q] [--quieter | -Q] [--silent] [--progress | -p] [--trickle | -t] [--only-hash | -n] [--wrap-with-directory | -w] [--hidden | -H] [--chunker=<chunker> | -s] [--pin=false] [--raw-leaves] [--nocopy] [--fscache] [--] <path>...
+参数
+<path>... - 要添加到ipfs的文件的路径。
+选项
+选项标识	                    选项类型	  介绍
+-r, --recursive	              bool	    递归添加目录路径。缺省为false
+-q, --quiet	                  bool	    最少化打印输出
+-Q, --quieter	                bool	    只打印最终哈希
+--silent	                    bool	    不打印任何输出
+-p, --progress	              bool	    以数据流方式处理数据
+-t, --trickle	                bool	    使用滴式DAG格式生成DAG
+-n, --only-hash	              bool	    仅分块和哈希，不写入磁盘
+-w, --wrap -with -directory	  bool	    用目录对象包裹文件
+-H, --hidden	                bool    	包括隐藏的文件。只有递归添加时有效
+-s, --chunker	                string    指定分块算法
+--pin	                        bool	    添加时将对象绑定到本次存储，缺省开启
+--raw -leaves	                bool	    使用原始块作为叶子节点。(实验中)
+--nocopy	                    bool	    通过文件仓库添加文件。(实验中)
+--fscache                   	bool	    在文件仓库中检查与现存在的区块。(实验中)
+描述
+将<path>中的内容添加到IPFS。使用-r添加目录。注意：目录是递归添加的，以便于形成IPFS默克尔有向无环图。
+包裹的选项，“-w”，将文件包裹到一个目录里。这个目录只含有被添加的这些文件，这意味着文件保留其本身的文件名，例如。
+1.	>ipfs add example.jpg
+2.	added QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH example.jpg
+3.	> ipfs add example.jpg -w
+4.	  added QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH example.jpg
+5.	  added QmaG4FuMqEBnQNn3C8XJ5bpW8kLs7zq2ZXgHptJHbKDDVx
+你现在可以通过目录的方式访问被添加的文件，比如：
+1.	/ipfs/QmaG4FuMqEBnQNn3C8XJ5bpW8kLs7zq2ZXgHptJHbKDDVx/example.jpg
+
+
+3、	ipfs bitswap
+3.1、	ipfs bitswap
+用法
+ipfs bitswap - 与bitswap代理交互。
+使用范例
+ipfs bitswap
+子命令
+命令	                           介绍
+ipfs bitswap ledger <peer>	    向一个节点展示目前的账本
+ipfs bitswap stat	              在bitswap代理上展示一些诊断信息
+ipfs bitswap unwant <key>...	  从你的需求列表上移除一个给定的区块
+ipfs bitswap wantlist	          展示目前在需求列表上的区块
+使用“ipfs bitswap <子命令> --help”来查看关于每个命令的更多信息。
+
+3.2、	ipfs bitswap ledger
+用法
+ipfs bitswap ledger <peer> - 向一个节点展示目前的账本。
+使用范例
+ipfs bitswap ledger [--] <peer>
+参数
+<peer>- 要检查的账本的PeerID(B58)
+描述
+bitswap决策引擎会追溯IPFS节点间字节交换的数量，并将这些信息存储为账本集。这个命令打印与给定节点相关的账本。
+
+3.3、	ipfs bitswap reprovide
+用法
+ipfs bitswap reprovide - 触发再供应器。
+使用范例
+ipfs bitswap reprovide
+描述
+触发再供应器将我们的数据发布到网络。
+
+3.4、	ipfs bitswap stat
+用法
+ipfs bitswap stat - 在bitswap代理上展示诊断信息。
+使用范例
+ipfs bitswap stat
+
+3.5、	ipfs bitswap unwant
+用法
+ipfs bitswap unwant <key> ... - 从你的需求列表中移除一个给定的区块。
+使用范例
+ipfs bitswap unwant [--] <key> ...
+参数
+<key>... - 需要从需求列表中移除的Key(s)
+
+3.6、	ipfs bitswap wantlist
+用法
+ipfs bitswap wantlist - 展示目前在需求列表中的区块。
+使用范例
+ipfs bitswap wantlist [--peer=<peer> | -p]
+选项
+选项标识	    选项类型	   介绍
+-p, --peer	  string	   指定展示针对哪个节点的需求列表，默认为自己。
+描述
+打印目前本地节点在bitswap需求列表中的所有区块。
+
+
+4、	ipfs block
+4.1、	ipfs block
+用法
+ipfs block - 与原始IPFS区块交互。
+使用范例
+ipfs block
+描述
+“ipfs block”是一个操纵原始IPFS区块的管道命令。从stdin读取或写入到stdout，并且<key>是一个base58编码的多重哈希。
+子命令
+命令	                       介绍
+ipfs block get <key>	      获取一个原始IPFS区块
+ipfs block put <data>	      将输入存储为IPFS区块
+ipfs block rm <hash> ...	  移除IPFS区块
+ipfs block stat <key>	      打印关于一个原始IPFS区块的信息
+使用“ipfs block <子命令> –help”获取更多关于每个命令的信息。
+
+4.2、	ipfs block get
+用法
+ipfs block get <key> - 获取原始IPFS区块。
+使用范例
+ipfs block get [--] <key>
+参数
+<key> - 要获取的块的base58哈希。
+描述
+“ipfs block get”是一个操纵原始IPFS区块的管道命令。它将输出打印到stdout，并且<key>是一个base58编码的哈希。
+
+4.3、	ipfs block put
+用法
+ipfs block put <data> - 将输入存储到IPFS区块中。
+使用范例
+ipfs block put [--format=<format> | -f] [--mhtype=<mhtype>] [--mhlen=<mhlen>] [--] <data>
+参数
+<data> - 要存到IPFS区块中的数据。
+选项
+选项标识	      选项类型	    介绍
+-f, --format	  string	    要创建的区块的cid格式，缺省为v0
+--mhtype	      string	    多重哈希函数，缺省为sha2-256
+--mhlen	        int	        多重哈希长度，缺省为-1
+描述
+“ipfs block put”是一个操纵原始IPFS区块的管道命令。它从stdin中读取数据，并且<key>是一个base58编码的多重哈希。
+
+4.4、	ipfs block rm
+用法
+ipfs block rm <hash>... - 移除IPFS区块。
+使用范例
+ipfs block rm [--force | -f] [--quiet | -q] [--] <hash>...
+参数
+<hash>... - 要移除的区块的base58多重哈希。
+选项
+选项标识	      选项类型	    参数介绍
+-f, --force	    bool	      忽视不存在的区块，缺省为false.
+-q, --quiet	    bool	      最少化的写输出，缺省为false
+描述
+“ipfs block rm”是一个操纵原始IPFS区块的管道命令。它以base58编码的多重哈希的列表为输入移除区块。
+
+4.5、	ipfs block stat
+用法
+ipfs block stat <key> - 打印一个IPFS区块的原始信息。
+使用范例
+ipfs block stat [--] <key>
+参数
+<key> - 要查看信息的区块的base58编码。
+描述
+“ipfs block stat”是一个操纵原始IPFS区块的管道命令。它向stdout中输出以下信息：
+•	Key - base58编码的多重哈希。
+•	大小 - 区块的大小（以字节为单位）。
+
+
+5、	ipfs bootstrap
+5.1、	ipfs bootstrap
+用法
+ipfs bootstrap - 展示或编辑引导节点列表。
+使用范例
+ipfs bootstrap
+描述
+在无参数条件下执行“ipfs bootstrap”等价于执行“ipfs bootstrap list”。
+子命令
+命令	                              介绍
+ipfs bootstrap add [<peer>]...	    向引导节点列表中添加节点
+ipfs bootstrap list	                展示列表中引导节点
+ipfs bootstrap rm [<peer>]...	      从引导节点列表中移除节点
+使用“ipfs bootstrap <子命令> --help”来查看关于每条命令的详细信息。
+
+5.2、	ipfs bootstrap add	
+用法
+ipfs bootstrap add [<peer>]... - 向引导节点列表中添加节点。
+使用范例
+ipfs bootstrap add [--default] [--] [<peer>...]
+参数
+[<peer>]... - 要加入引导节点列表的节点(以“<多重地址>/<节点ID>”的格式)。
+选项
+选项标识	    选项类型	    介绍
+--default	    bool	      添加默认的引导节点（不推荐，建议使用“default”子命令）。
+描述
+输出要添加的节点列表（这些节点目前不在引导节点列表里）。
+安全警示：
+引导命令操纵包含引导节点地址的“bootstrap list”。这些是可信节点，通过这些节点可以了解网络中其他节点的状态。如果你不了解修改本列表的风险，请不要修改本列表。
+子命令
+命令	                         介绍
+ipfs bootstrap add default	   向引导节点列表中添加默认节点。
+使用 “ipfs bootstrap add <子命令> --help”来查看关于每条命令的详细信息。
+
+5.3、	ipfs bootstrap add default
+用法
+ipfs bootstrap add default - 向引导节点列表添加默认节点。
+使用范例
+ipfs bootstrap add default
+描述
+输出被添加的节点列表（这些节点还不在引导节点列表里）。
+
+5.4、	ipfs bootstrap list
+用法
+ipfs bootstrap list - 打印引导节点列表。
+使用范例
+ipfs bootstrap list
+描述
+节点以“<多重地址>/<节点ID>”的格式打印。
+
+5.5、	ipfs bootstrap rm
+用法
+ipfs bootstrap rm [<peer>]... - 从引导节点列表中移除节点。
+使用范例
+ipfs bootstrap rm [--all] [--] [<peer>...]
+参数
+[<peer>]... - 要被移除的节点(以“<多重地址>/<节点ID>”的格式)。
+选项
+选项标识	  选项类型	    介绍
+--all	      bool	      移除所有引导节点列表中的节点。(不推荐，请使用“all”子命令)。
+描述
+输出被移除的节点列表。
+安全警示：
+引导命令操纵包含引导节点地址的“bootstrap list”。这些是可信节点，通过这些节点可以了解网络中其他节点的状态。如果你不了解修改本列表的风险，请不要修改本列表。
+子命令
+命令	                     介绍
+ipfs bootstrap rm all	     从引导节点列表中移除所有节点。
+使用“ipfs bootstrap rm <子命令> --help”来查看关于每条命令的详细信息。
+
+5.6、	ipfs bootstrap rm all
+用法
+ipfs bootstrap rm all - 从引导节点列表中移除所有节点。
+使用范例
+ipfs bootstrap rm all
+描述
+输出被移除的节点列表。
+
+
+6、	ipfs cat
+用法
+ipfs cat <ipfs-path>... – 显示IPFS对象的数据。
+使用范例
+ipfs cat [--] <ipfs-path>...
+参数
+<ipfs-path>... – 需要输出的IPFS对象的路径。
+描述
+显示指定路径的IPFS或IPNS对象所包含的数据。
+
+
+7、	ipfs commands
+用法
+ipfs commands - 列出所有可用的命令。
+使用范例
+ipfs commands [--flags | -f]
+选项
+选项标识	      选项类型	    介绍
+-f, --flags	    bool	       显示命令标志。缺省为false。
+描述
+列出所有可用的命令（包括子命令）并结束。
+
+
+8、	ipfs config
+8.1、	ipfs config
+用法
+ipfs config <key> [<value>] – 获取以及设置IPFS的配置参数值。
+使用范例
+ipfs config [--bool] [--json] [--] <key> [<value>]
+参数
+<key>     - 配置项的关键字（例如“Addresses.API”）。
+[<value>] – 要设置的配置项的值。
+选项
+选项标识	  选项类型	    介绍
+--bool	    bool	      设置一个布尔值。缺省为false。
+--json	    bool	      对转换为字符串的JSON进行解析。缺省为false。
+
+描述
+“ipfs config”用来控制各种配置的变量。其工作原理类似“git config”。配置参数值存储在IPFS知识库的配置文件中。
+例子
+获取“Datastore.Path”键的值：
+$ ipfs config Datastore.Path
+设置“Datastore.Path”键的值：
+$ ipfs config Datastore.Path~/ .ipfs / datastore
+子命令
+命令	                          介绍
+ipfs config edit	              在$ EDITOR中打开配置文件，从而进行编辑。
+ipfs config replace <file>	    用<file>配置文件替换现行配置。
+ipfs config show	              输出配置文件的内容。
+使用“ipfs config <subcmd> --help”指令可以进一步获取每个命令的更多信息。
+
+8.2、	ipfs config edit
+用法
+ipfs config edit - 在$ EDITOR中打开配置文件，从而进行编辑。
+使用范例
+编辑ipfs配置
+描述
+要使用“ipfs config edit”，您必须将$ EDITOR环境变量设置为您的首选文本编辑器。
+
+8.3、	ipfs config profile
+用法
+ipfs config profile – 将配置文件应用到配置。
+使用范例
+ipfs config profile
+子命令
+命令	                                  介绍
+ipfs config profile apply <profile>	    将配置文件应用到配置
+使用“ipfs config profile <子命令> --help”来查看关于每个命令的更多信息。
+
+8.4、	ipfs config profile apply
+用法
+ipfs config profile apply <profile> - 将配置文件应用到配置。
+使用范例
+ipfs config profile apply [--] <profile>
+参数
+<profile> - 要应用到配置的概述文件。
+
+8.5、	ipfs config replace
+用法
+ipfs config replace <file> - 用<file>配置文件替换现行配置。
+使用范例
+将ipfs配置替换为[--] <file>
+参数
+<file> - 将要使用的配置文件。
+描述
+如果需要，请确保先备份配置文件，因为此操作无法撤消。
+
+8.6、	ipfs config show
+用法
+ipfs config show - 输出配置文件的内容。
+使用范例
+展示ipfs配置
+描述
+注意：您的私钥存储在配置文件中，此命令的输出中也包含私钥信息。
+
+
+9、	ipfs daemon
+用法
+ipfs daemon – 运行一个连接网络的IPFS节点。
+使用范例
+ipfs daemon [--init] [--routing=<routing>] [--mount] [--writable] [--mount-ipfs=<mount-ipfs>] [--mount-ipns=<mount-ipns>] [--unrestricted-api] [--disable-transport-encryption] [--enable-gc] [--manage-fdlimit=false] [--offline] [--migrate] [--enable-pubsub-experiment] [--enable-mplex-experiment=false]
+选项
+选项标识	                          选项类型	  介绍
+--init	                            bool	    如果尚未初始化，使用默认设置初始化IPFS。缺省为false。
+--routing                          	string	  覆盖路由选项。缺省为dht。
+--mount	                            bool	    将IPFS挂载到文件系统。缺省为false。
+--writable	                        bool	    启用写入对象（使用POST，PUT和DELETE）。缺省为false。
+--mount -ipfs   	                  string	  IPFS挂载点的路径（如果使用--mount）。默认为配置设置。
+--mount -ipns	                      string	  IPNS安装点的路径（如果使用--mount）。默认为配置设置。
+--unrestricted -api	                bool	    允许API访问未列出的哈希。缺省为false。
+--disable -transport -encryption	  bool	    禁用传输加密（用于调试协议）。缺省为false。
+--enable -gc	                      bool	    启用垃圾回收定期自动报告功能。缺省为false。
+--manage -fdlimit                  	bool	    根据需要检查并提高文件描述符限制。缺省为true。
+--offline                          	bool	    离线运行。不连接到网络的其余部分，但提供本地API。缺省为false。
+--migrate	                          bool    	如果为true，则移动提示项为yes。如果为false，则为no。
+--enable -pubsub -experiment      	bool	    启用实验性pubsub功能来实例化ipfs守护进程。
+--enable -mplex -experiment       	bool	    在构建过程中添加实验性的“go-multiplex”流式复用器到libp2p。缺省为true。
+描述
+守护进程将开始监听网络端口，这些端口记录在“ipfs config Addresses”（也可以通过该其修改记录位置）。
+例如，更改“网关”端口：
+1.	ipfs config Addresses.Gateway /ip4/127.0.0.1/tcp/8082
+API地址也可以以相同的方式更改：
+1.	ipfs config Addresses.API /ip4/127.0.0.1/tcp/5002
+在更改地址后必须重新启动守护程序。
+默认情况下，网关只能在本地访问。要将其公开给网络中的其他计算机，请使用0.0.0.0作为IP地址：
+1.	ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
+如果你的API暴露了就需要小心。这其中存在着安全风险，因为任何人都可以对您的节点实施远程控制。如果您需要远程控制某个节点，请确保像其他服务或数据库（防火墙，验证代理等）一样保护端口。
+HTTP头
+IPFS支持将任意头文件传递给API和网关。您可以通过在API.HTTPHeaders和Gateway.HTTPHeaders上设置标题来完成此操作。
+Keys：
+1.	  ipfs config --json API.HTTPHeaders.X-Special-Header'[“so special :)”]'
+2.	  ipfs config --json Gateway.HTTPHeaders.X-Special-Header'[“so special :)”]'
+请注意，Keys的值是_array_字符串。这是因为标题可以有多个值，这样有利于传递到其他库。
+CORS头（用于API）
+你可以用同样的方法设置CORS头文件：
+1.	  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin'[“example.com”]'
+2.	  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods'[“PUT”，“GET”，“POST”]'
+3.	  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials'[“true”]'
+关闭：
+如果想要关闭守护进程，请发送一个SIGINT信号（例如按“Ctrl+C”）或发送一个SIGTERM信号（例如“kill”）。守护进程可能需要一段时间才能正常关闭，但可以通过发送第二个相同的信号来强制终止。
+IPFS_PATH环境变量
+ipfs在本地文件系统中使用一个存储库。默认情况下，其报告位于〜/ .ipfs。要更改报告的位置，请设置$ IPFS_PATH
+环境变量：
+1.	export IPFS_PATH=/path/to/ipfsrepo
+路由
+默认情况下，IPFS将使用DHT进行内容路由。有一个高度实验性的替代方案，它将以“仅客户端”模式运行DHT，可以通过运行守护程序来启用：
+1.	ipfs daemon --routing = dhtclient
+一旦退出“实验”阶段，将在稍后转入配置选项。
+弃用通知
+以前，ipfs使用的环境变量如下所示：
+1.	export API_ORIGIN =“http：// localhost：8888 /”
+如今这已被弃用。它仍然包含在此版本中发布，但随着此通知将在未来版本中删除。请转到设置HTTP Hearders。
+
+
+10、	ipfs dag
+10.1、	ipfs dag
+用法
+ipfs dag - 与ipld dag对象进行交互。
+使用范例
+ipfs dag
+描述
+“ipfs dag”用于创建和操作dag对象。
+这个子命令目前是一个实验性功能，但它的目的是反对并取代现有的“ipfs object”命令。
+子命令
+命令	                        介绍
+ipfs dag get <ref>	          从ipfs获取一个dag节点。
+ipfs dag put <object data>	  将一个dag节点添加到ipfs。
+使用“ipfs dag <子命令> --help”获取每个命令的更多信息。
+
+10.2、	ipfs dag get
+用法
+ipfs dag get <ref> - 从ipfs获取一个dag节点。
+使用范例
+ipfs dag get [--] <ref>
+变量
+<ref> - 要获取的对象
+描述
+“ipfs dag get”从ipfs获取一个dag节点并以指定的格式打印出来。
+
+10.3、	ipfs dag put
+用法
+ipfs dag put <object data> - 将一个dag节点添加到ipfs。
+使用范例
+ipfs dag put [--format=<format> | -f] [--input-enc=<input-enc>] [--] <object data>
+变量
+<object data> - 要添加的对象
+选项
+选项标识	      选项类型	    介绍
+-f, --format	  string	    将要添加的对象格式化为。缺省为cbor
+--input -enc	  string	    将要输入的对象格式化为。缺省为json。
+描述
+“ipfs dag put”接受来自文件或stdin的输入并将其解析为指定格式的对象。
+
+10.4、	ipfs dag resolve
+用法
+ipfs dag resolve <ref> - 解析ipld块。
+使用范例
+ipfs dag resolve [--] <ref>
+参数
+<ref> - 要解析的路径
+描述
+“ipfs dag resolve”从ipfs获取一个dag节点，打印它的地址和其余的路径
+
+
+11、	ipfs dht
+11.1、	ipfs dht
+用法
+ipfs dht - 直接通过DHT发布命令。
+使用范例
+ipfs dht
+子命令
+命令	                            介绍
+ipfs dht findpeer <peerID>...	    查询与Peer ID关联的所有多重地址的DHT。
+ipfs dht findprovs <key>...	      给定特定key的情况下，在DHT中查找可以提供特定值的节点。
+ipfs dht get <key>...	            给定一个key，查询DHT的最佳值。
+ipfs dht provide <key>...	        向网络广播您正在提供给定的key的值。
+ipfs dht put <key> <value>	      将一个键/值对写入DHT。
+ipfs dht query <peerID>...	      通过查询DHT查找与给定对等ID最接近的对等ID。
+使用“ipfs dag <子命令> --help”获取每个命令的更多信息。
+
+11.2、	ipfs dht findpeer
+用法
+ipfs dht findpeer <peerID>... - 查询与Peer ID关联的所有多重地址的DHT。
+使用范例
+ipfs dht findpeer [--verbose | -v] [--] <peerID>...
+变量
+<peerID>... - 要搜索的节点的ID。
+选项
+选项标识	      选项类型	   介绍
+-v, --verbose	  bool	      打印额外信息。缺省为false
+描述
+输出换行符分隔的多地址列表。
+
+11.3、	ipfs dht findprovs
+用法
+ipfs dht findprovs <key>... - 给定特定key的情况下，在DHT中查找可以提供特定值的节点。
+使用范例
+ipfs dht findprovs [--verbose | -v] [--] <key>...
+变量
+<key>... - 寻找提供者的key。
+选项
+选项标识	        选项类型	  介绍
+-v, --verbose	    bool	     打印额外信息。缺省为false
+描述
+输出由换行符分隔的提供者节点的ID。
+
+11.4、	ipfs dht get
+用法
+ipfs dht get <key>... - 给定一个key，查询DHT的最佳值。
+使用范例
+ipfs dht get [--verbose | -v] [--] <key>...
+变量
+<key>... – 用来寻找对应值的key。
+选项
+选项标识	      选项类型	 介绍
+-v, --verbose	  bool	    打印额外信息。缺省为false
+描述
+输出给定key的最佳值。
+对于存储在DHT中的给定key可以有几个不同的值；在这种情况下，“最好”意味着最需要的记录。 没有一个“最佳”指标：它完全取决于key的类型。对于IPNS，“最好”是既有效又有最高序列号（最新）的记录。
+可以根据不同的key类型指定其他的“最佳”规则。
+
+11.5、	ipfs dht provide
+用法
+ipfs dht provide <key>... - 向网络广播您正在提供给定的key的值。
+使用范例
+ipfs dht provide [--verbose | -v] [--recursive | -r] [--] <key>...
+变量
+<key>... - 要发送的提供记录的key。
+选项
+选项标识	        选项类型	 介绍
+-v, --verbose	    bool	    打印额外信息。缺省为false。
+-r, --recursive	  bool	    递归地提供完整的图形。 缺省为false。
+
+11.6、	ipfs dht put
+用法
+ipfs dht put <key> <value> - 将一个键/值对写入DHT。
+使用范例
+ipfs dht put [--verbose | -v] [--] <key> <value>
+变量
+<key>   - 要存储的值所对应的key。
+<value> - 要存储的值。
+选项
+选项标识	        选项类型	 介绍
+-v, --verbose	    bool	    打印额外信息。缺省为false
+描述
+给定一个格式为/foo/bar的key以及任意形式的值，这将使该值对应该key地被写入DHT中。
+key有两部分：key的类型（foo）和key的名称（bar）。 IPNS使用/ipns作为key的类型，并且期望将key的名称作为节点ID。IPNS条目是专门格式化的（协议缓冲区）。
+您只能使用ipfs二进制文件支持的key的形式：目前只有/ipns。 除非你对go-ipfs DHT内部有相对深入的了解，否则你应该使用“ipfs name publish”而不是本指令。
+值是任意文本。 标准输入可用于提供值。
+注意：值不能超过2048字节。
+
+11.7、	ipfs dht query
+用法
+ipfs dht query <peerID>... - 通过查询DHT查找与给定节点ID最接近的节点ID。
+使用范例
+ipfs dht query [--verbose | -v] [--] <peerID>...
+变量
+<peerID>... - 用来查询的节点ID。
+选项
+选项标识	        选项类型	   介绍
+-v, --verbose	    bool	      打印额外信息。缺省为false
+描述
+输出换行符分隔的节点ID列表。
+
+
+12、	ipfs diag
+12.1、	ipfs diag
+用法
+ipfs diag - 生成诊断报告。
+使用范例
+ipfs diag
+子命令
+命令	            介绍
+ipfs diag cmds	  列出在本IPFS节点上执行的命令
+ipfs diag net	    生成网络诊断报告
+ipfs diag sys	    打印系统诊断信息
+使用“ipfs diag <subcmd> --help”来获取关于每条命令的更多信息。
+
+12.2、	ipfs diag cmds
+用法
+ipfs diag cmds - 列出在本节点运行的所有命令。
+使用范例
+ipfs diag cmds [--verbose | -v]
+选项
+选项标识	      选项类型	  介绍
+-v，--verbose	 bool	      打印额外信息，缺省为false
+描述
+列出正在运行和最近运行的命令。
+子命令
+命令	                              介绍
+ipfs diag cmds clear	              从日志中清除不活跃的请求
+ipfs diag cmds set-time <time>	    设置日志中保存不活跃请求的时间
+使用“ipfs diag <subcmd> --help”获取更多关于每个命令的信息。
+
+12.3、	ipfs diag cmds clear
+用法
+ipfs diag cmds clear - 从日志中清除不活跃请求。
+使用范例
+ipfs diag cmds clear
+
+12.4、	ipfs diag cmds set-time
+用法
+ipfs diag cmds set-time <time> - 设置日志中保存不活跃请求的时间。
+使用范例
+ipfs diag cmds set-time [--] <time>
+参数
+<time> - 在日志中保存不活跃请求的时间。
+
+12.5、	ipfs diag sys
+用法
+ipfs diag sys - 打印系统诊断信息。
+使用范例
+ipfs diag sys
+描述
+打印关于你的电脑的信息，可辅助debug。
+
+
+13、	ipfs dns
+用法
+ipfs dns <domain-name> - 解析DNS链接。
+使用范例
+ipfs dns [--recursive | -r] [--] <domain-name>
+参数
+<domain-name> - 要解析的域名。
+选项
+选项标识	        选项类型	  介绍
+-r，--recursive	 bool	      持续解析，直到结果不是一个DNS为止，缺省为false
+描述
+多重哈希很难记忆，但域名很容易记住。为了给多重哈希创建易于记忆的别名，DNS TXT记录能指向其他DNS链接，IPFS对象，IPNS密钥等待。这条命令解析这些指向相应对象的链接。
+例如下面这条DNS TXT记录：
+1.	> dig +short TXT _dnslink.ipfs.io    dnslink=/ipfs/QmRzTuh2Lpuz7Gr39stNr6mTFdqAghsZec1JoUnfySUzcy
+解析器将会给出：
+1.	> ipfs dns ipfs.io /ipfs/QmRzTuh2Lpuz7Gr39stNr6mTFdqAghsZec1JoUnfySUzcy
+解析器能递归解析出：
+1.	> dig +short TXT recursive.ipfs.io
+2.	dnslink=/ipns/ipfs.io
+3.	> ipfs dns -r recursive.ipfs.io    /ipfs/QmRzTuh2Lpuz7Gr39stNr6mTFdqAghsZec1JoUnfySUzcy
+
+
+14、	ipfs file
+14.1、	ipfs file
+用法
+ipfs file - 与以unix文件系统类似的IPFS对象交互。
+使用范例
+ipfs file
+描述
+“ipfs file”提供一个到以IPFS对象为代表文件系统的接口，这个接口隐藏了ipfs实现的细节，比如展示对象（分列和分块）。
+子命令
+命令	                            介绍
+ipfs file ls <ipfs-path>…	        以unix文件系统对象的形式列出目录内容
+使用“ipfs file <subcmd> - -help”来查看关于每条命令的详细信息。
+
+14.2、	ipfs file ls
+用法
+ipfs file ls <ipfs-path>… - 以unix文件系统形式列出目录内容。
+使用范例
+ipfs file ls [--] <ipfs-path>…
+参数
+<ipfs-path>… - 要列出链接的IPFS对象的路径。
+描述
+展示一个路径下的IPFS或IPNS对象的内容。
+JSON输出包括大小信息。对文件来说，child的大小就是该文件内容的总共大小。对目录来说，child 的大小就是IPFS链接的大小。
+路径可以是有前缀的斜杠，在这种情况下，我们假设他是一个/ipfs ref并且不是/ipns。
+举例：
+1.	> ipfs file ls QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
+2.	cat.jpg
+3.	> ipfs file ls /ipfs/QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
+4.	cat.jpg
+这个功能后续将被移除，请尽可能使用“ipfs ls”。
+
+
+15、	ipfs files
+15.1、	ipfs files
+用法
+ipfs files - 与unix文件系统文件交互。
+使用范例
+ipfs files [--f=false]
+选项
+选项标识	       选项类型	    介绍
+-f，--flush	    bool	      在写入后清理目标和其祖先，缺省为true（译者注：即将内存中数据清理并写入磁盘）
+描述
+Files是一个以unix文件系统格式操作IPFS对象的API。
+注意：
+大部分“ipfs files”的子命令接受“—flush”，其缺省为true。如果把他设置为false时需要注意。这种操作以牺牲一致性为代价，能提升大批量文件操作时系统的表现。但如果后台进程意外的在执行“ipfs files flush” 前退出的话，数据有丢失的风险。这种情况也同样适用于在“ --flush=false”情况下执行“ipfs repo gc”。
+子命令
+命令	                            介绍
+ipfs files cp <source> <dest>	    将文件拷贝到mfs
+ipfs files flush [<path>]	        将给定路径的数据转存到磁盘上
+ipfs files ls [<path>]	          列出本地可变命名空间的目录
+ipfs files mkdir <path>	          创建目录
+ipfs files mv <source> <dest>	    移动文件
+ipfs files read <path>	          从给定mfs中读取文件
+ipfs files rm <path>…	            移除文件
+ipfs files stat <path>	          展示文件状态
+ipfs files write <path> <data>	  在给定的文件系统中写入一个可变文件
+使用“ipfs files <subcmd> --help”获取更多关于每个命令的信息。
+
+15.2、	ipfs files chcid
+用法
+ipfs files chcid [<path>] – 根据给定路径更改根节点的CID版本或哈希函数。
+使用范例
+ipfs files chcid [--cid-version=<cid-version> | --cid-ver] [--hash=<hash>] [--] [<path>]
+参数
+[<path>] – 需要更改的路径。缺省为“/”。
+选项
+选项标识	                  选项类型	    介绍
+--cid-ver, --cid-version	  int	         要使用的Cid的版本。
+--hash	                    string	     要使用的哈希函数，如果使用此设置，Cid版本将设置为1（实验性的）
+描述
+改变给定地址的根节点的Cid版本或者哈希函数。
+
+15.3、	ipfs files cp
+用法
+ipfs files cp <source> <dest> - 将文件拷贝到mfs。
+使用范例
+ipfs files cp [—] <source> <dest>
+参数
+<source>   - 要拷贝的源文件。
+<dest>    - 要拷贝到的地址。
+
+15.4、	ipfs files flush
+用法
+ipfs files flush [<path>] - 将目标路径的数据转存到磁盘。
+使用范例
+ipfs files flush [--] [<path>]
+参数
+[<path>] - 要清理的路径. 缺省为: “/”。
+描述
+将给定路径的数据转存到磁盘。本命令仅在“--flush=false”时有效。
+
+15.5、	ipfs files ls
+用法
+ipfs files ls [<path>] - 列出本地可变命名空间的目录。
+使用范例
+ipfs files ls [-l] [--] [<path>]
+参数
+[<path>] - 要列出的路径，缺省为“/”。
+选项
+选项标识	  选项类型	   介绍
+-l	        bool	      使用长列表格式
+描述
+列出本地可变命名空间目录。
+举例：
+1.	 $ ipfs files ls /welcome/docs/
+2.	 about
+3.	 contact
+4.	 help
+5.	 quick-start
+6.	 readme
+7.	 security-notes
+8.	 $ ipfs files ls /myfiles/a/b/c/d
+9.	 foo
+10.	 bar
+
+15.6、	ipfs files mkdir
+用法
+ipfs files mkdir <path> - 创建目录。
+使用范例
+ipfs files mkdir [--parents | -p] [--] <path>
+参数
+<path> - 要创建的目录的路径。
+选项
+选项标识	      选项类型	  介绍
+-p,--parents	  bool	     如果存在的话也不报错，按需创建父目录
+描述
+创建不存在的目录。
+注意：所有目录一定要是绝对路径。
+举例：
+1.	  $ ipfs mfs mkdir /test/newdir
+2.	  $ ipfs mfs mkdir -p /test/does/not/exist/yet
+
+15.7、	ipfs files mv
+用法
+ipfs files mv <source> <dest> - 移动文件。
+使用范例
+ipfs files mv [--] <source> <dest>
+参数
+<source>  - 要移动的源文件。
+<dest>     - 要移动到的位置。
+描述
+就像unix系统里的mv一样。
+范例：
+  $ ipfs files mv /myfs/a/b/c /myfs/foo/newc
+
+15.8、	ipfs files read
+用法
+ipfs files read <path> - 在给定的mfs里读取一个文件。
+使用范例
+ipfs files read [--offset=<offset> | -o] [--count=<count> | -n] [--] <path>
+参数
+<path> - 读取路径。
+选项
+选项标识	        选项类型	  介绍
+-o, --offset	   int	       开始读取位置的字节偏移
+-n, --count	     int	       读取的最大字节数
+描述
+从文件的给定偏移位置起去读一定数量的字节。默认情况下将像unix中的cat一样读取整个文件。
+举例：
+1.	$ ipfs files read /test/hello
+2.	hello
+
+15.9、	ipfs files rm
+用法
+ipfs files rm <path>… - 移除一个文件。
+使用范例
+ipfs files rm [--recursive | -r] [--] <path>…
+参数
+<path>… - 要删除的文件。
+选项
+选项标识	         选项类型	    介绍
+-r，--recursive	  bool	      递归删除目录
+描述
+删除文件或目录。
+1.	$ ipfs files rm /foo
+2.	$ ipfs files ls /bar
+3.	cat
+4.	dog
+5.	fish
+6.	$ ipfs files rm -r /bar
+
+15.10、	ipfs files stat
+用法
+ipfs files stat <path> - 展示文件状态。
+使用范例
+ipfs files stat [--format=<format>] [--hash] [--size] [--] <path>
+参数
+<path> - 要查看状态的文件路径。
+选项
+选项标识	  选项类型	  介绍
+--format	  string	  以给定格式打印统计数据。允许的格式: <hash> <size> <cumulsize> <type> <childs>。这些格式互相冲突，缺省为: <hash>。其中,<size>指大小，<cumulsize>指累计大小，<childs>指子区块，<type>指类型
+--hash	    bool	    仅打印哈希。使用方法“--format=<hash>”。与其他格式冲突，缺省为: false
+--size	    bool	    仅打印大小.。使用方法“--format=<cumulsize>”。与其他格式冲突，缺省为: false
+
+15.11、	ipfs files write
+用法
+ipfs files write <path> <data> - 在给定的文件系统里写入一个可变的文件。
+使用范例
+ipfs files write [--offset=<offset> | -o] [--create | -e] [--truncate | -t] [--count=<count> | -n] [--] <path> <data>
+参数
+<path> - 要写入的路径。
+<data> - 要写入的数据。
+选项
+选项标识	      选项类型	 介绍
+-o, --offset	  int	      开始写入位置的字节偏移
+-e, --create	  bool	    如果文件不存在则创建文件
+-t, --truncate	bool	    写入文件前清空文件所有内容并从0位置开始写入
+-n, --count	    int	      读取的最大字节数
+描述
+在给定的文件系统中的文件内写入数据。这条命令允许你选定一个开始写入的偏移位置。输入将被完整写入到文件。
+如果你使用了“—create”选项，那当文件不存在时其将被创建。不存在的中间目录不会被创建。
+如果“—flush”选项被设置为false，那么改变不会影响默克尔有向无环图的根。当对较深的目录结构做大量写入操作时，这可以让操作更快。
+举例：
+1.	echo "hello world" | ipfs files write --create /myfs/a/b/file
+2.	echo "hello world" | ipfs files write --truncate /myfs/a/b/file
+警告：
+使用“--flush=false”选项在树被清理之前不能确保数据持久性。该选项可以与“ipfs files stat”一起用到文件或其任何祖先上。
+
+
+16、	ipfs filestore
+16.1、	ipfs filestore
+用法
+ipfs filestore - 与其他文件仓库对象交互。
+使用范例
+ipfs filestore
+子命令
+命令	                            介绍
+ipfs filestore dups	              列出同时存在于文件仓库和标准块存储里的区块
+ipfs filestore ls [<obj>]…	      列出文件仓库里的对象
+ipfs filestore verify [<obj>]…	  验证文件仓库里的对象
+使用“ipfs filestore <subcmd> --help”来查看关于每条命令的详细信息。
+
+16.2、	ipfs filestore dups
+用法
+ipfs filestore dups - 列出同时在文件仓库和标准块存储里的区块。
+使用范例
+ipfs filestore dups
+
+16.3、	ipfs filestore ls
+用法
+ipfs filestore ls [<obj>]… - 列出在文件仓库里的对象。
+使用范例
+ipfs filestore ls [--] [<obj>…]
+参数
+[<obj>]… - 要列出对象的Cid。
+描述
+列出文件仓库里的对象。
+如果一个或多个<obj>被指定，那么只列出具体的对象，否则列出所有对象。
+输出像这样：
+<hash> <size> <path> <offset>
+
+16.4、	ipfs filestore verify
+用法
+ipfs filestore verify [<obj>]… - 验证文件仓库中的对象。
+使用范例
+ipfs filestore verify [--] [<obj>…]
+参数
+[<obj>]… - 要验证对象的Cid。
+描述
+验证文件仓库中的对象。
+如果一个或对个<obj>被指定，那么只验证具体的对象，否则验证所有对象。
+输出像这样：
+<status> <hash> <size> <path> <offset>
+其中<status>包含下列可能结果：
+结果字符	       含义
+ok	            可以重构的区块
+changed	        备份文件的内容已更改
+no-file	        找不到备份文件
+error	          读文件时出现问题
+missing	<obj>   在文件仓库中找不到该文件
+ERROR	          内部错误，最有可能是由于数据库错误
+当出现ERROR错误时，错误信息会被打印到 stderr 中。
+
+
+17、	ipfs get
+用法
+ipfs get <ipfs-path> - 下载IPFS对象。
+使用范例
+ipfs get [--output=<output> | -o] [--archive | -a] [--compress | -C] [--compression-level=<compression-level> | -l] [--] <ipfs-path>
+参数
+<ipfs-path> - 获取IPFS对象的路径。
+选项
+选项标识	                选项类型	  介绍
+-o, --output	            string	   输出被存储的路径
+-a, --archive	            bool	     输出到一个tar文件中，缺省为false
+-C, --compress	          bool	     用GZIP格式压缩输出，缺省为false
+-l, --compression-level	  int	       压缩级别（1-9），缺省为-1
+描述
+将给定路径中的IPFS或IPNS对象的数据存储到磁盘。
+默认情况下，输出将被存储在“./<ipfs-path>”，但是可以用“--output=<path>”或“-o=<path>”指定其他路径。
+如果输出为TAR文件而不是未打包的文件，使用“—archive”或“-a”。
+如果要用GZIP格式压缩输出，使用“—archive”或“-a”，你也可以通过“-l=<1-9>”指定压缩级别。
+
+
+18、	ipfs id
+用法
+ipfs id [<peerid>] - 展示IPFS节点id信息。
+使用范例
+ipfs id [--format=<format> | -f] [--] [<peerid>]
+参数
+[<peerid>] - 要查看节点的Peer.ID。
+选项
+选项标识	      选项类型	   介绍
+-f，--format	   string	     可选的输出格式
+描述
+打印关于指定节点的信息。如果没有节点被指定，则打印本地节点的信息。
+“ipfs id”支持输出的格式选项，选项包括以下关键字：
+关键字	      介绍
+<id>	       节点id
+<aver>	     代理人版本
+<pver>	     协议版本
+<pubkey>	   公钥
+<addrs>	     地址（带有换行符）
+举例：
+ipfs id Qmece2RkXhsKe5CRooNisBTh4SK119KrXXGmoK6V3kb8aH -f="<addrs>\n"
+
+19、	ipfs init
+用法
+ipfs init [<default-config>] - 初始化IPFS配置文件。
+使用范例
+ipfs init [--bits=<bits> | -b] [--empty-repo | -e] [--] [<default-config>]
+参数
+[<default-config>] - 通过给定的配置进行初始化。
+选项
+选项标识	            选项类型	  介绍
+-b，--bits	           int	      生成RSA私钥需要的比特数。缺省为2048
+-e, --empty -repo	    bool	     不在本地存储添加或绑定任何帮助文件。缺省为false
+描述
+初始化IPFS配置文件并生成新的密钥对。
+IPFS使用一个本地文件系统的仓库。默认情况下，这个仓库位于 ~/.ipfs。要想改变仓库的位置，请设置$IPFS_PATH环境变量。
+export IPFS_PATH=/path/to/ipfsrepo
+
+
+20、	ipfs key
+20.1、	ipfs key
+用法
+ipfs key - 创造并列出IPNS名字密钥对。
+使用范例
+ipfs key
+描述
+“ipfs key gen”生成用于IPNF和“ipfs name publish”的一组新密钥对。
+1.	> ipfs key gen --type=rsa --size=2048 mykey
+2.	> ipfs name publish --key=mykey QmSomeHash
+“ipfs key list”列出可获取的密钥对。
+1.	> ipfs key list
+2.	self
+3.	mykey
+子命令
+命令	                    介绍
+ipfs key gen <name>	      创建一个新的密钥对
+ipfs key list	            列出所有本地密钥对
+使用“ipfs key <subcmd> --help”来查看关于每条命令的详细信息。
+
+20.2、	ipfs key gen
+用法
+ipfs key gen <name> - 创建一个新的密钥对。
+使用范例
+ipfs key gen [--type=<type> | -t] [--size=<size> | -s] [--] <name>
+参数
+<name> - 要创建的密钥的名字。
+选项
+选项标识	      选项类型	  介绍
+-t，--type	     string	    要创建的密钥类型 [rsa, ed25519]
+-s, --size	    int	       要生成的密钥大小
+
+20.3、	ipfs key list
+用法
+ipfs key list - 列出所有本地密钥对。
+使用范例
+ipfs key list [-l]
+选项
+选项标识	  选项类型	    介绍
+-l	        bool	       展示关于密钥的额外信息
+
+20.4、	ipfs key rename
+用法
+ipfs key rename <name> <newName> - 重命名键对
+使用范例
+ipfs key rename [--force | -f] [--] <name> <newName>
+参数
+<name>    - 需要重命名的键的名字
+<newName> - 该键的新名字
+选项
+选项标识	      选项类型	    介绍
+-f, --force	    bool	      允许覆盖写入一个已存在的键。
+
+20.5、	ipfs key rm
+用法
+ipfs key rm <name>... – 移除一个键对。
+使用范例
+ipfs key rm [-l] [--] <name>...
+参数
+<name>... – 要移除的键的名字
+选项
+选项标识	   选项类型	      介绍
+-l	        bool	        展示关于键的额外信息。
+
+
+21、	ipfs log
+21.1、	ipfs log
+用法
+ipfs log - 与后台进程的日志输出交互。
+使用范例
+ipfs log
+描述
+“ipfs log”包含多种能影响或读取后台进程日志输出的命令。
+子命令
+命令	                                  介绍
+ipfs log level <subsystem> <level>	    改变记录日志的等级
+ipfs log ls	                            列出记日志的子系统
+ipfs log tail	                          读取事件日志
+使用“ipfs log <subcmd> --help”来查看关于每条命令的详细信息。
+
+21.2、	ipfs log level
+用法
+ipfs log level <subsystem> <level> - 改变记日志的等级。
+使用范例
+ipfs log level [--] <subsystem> <level>
+参数
+<subsystem>  - 子系统的日志识别符，用“all”来指定所有子系统。
+<level>      - 日志等级，“debug”模式是最详细的，“critical”模式是最不详细的。各种选项：debug, info, warning, error, critical。
+描述
+改变一个或多个子系统日志输出的详细程度。这不会影响事件日志。
+
+21.3、	ipfs log ls
+用法
+ipfs log ls - 列出日志子系统。
+使用范例
+ipfs log ls
+描述
+ “ipfs log ls”是可以被用来列出后台进程日志子系统的非常有用的命令。
+
+21.4、	ipfs log tail
+用法
+ipfs log tail - 读取事件日志。
+使用范例
+ipfs log tail
+描述
+输出事件日志消息（不是其他日志信息）。
+
+
+22、	ipfs ls
+用法
+ipfs ls <ipfs-path>… - 以unix文件系统对象形式列出目录内容。
+使用范例
+ipfs ls [--headers | -v] [--resolve-type=false] [--] <ipfs-path>…
+参数
+<ipfs-path>… - 要列出链接的IPFS对象路径。
+选项
+选项标识	         选项类型	      介绍
+-v，--headers	    bool	        打印表头(Hash, Size, Name). 缺省为false
+--resolve-type	   bool	         解析链接着的对象以找出他们的类型，缺省为true
+描述
+展示给定路径下IPFS或IPNS对象的内容，格式如下：
+<link base58 hash> <link size in bytes> <link name>
+JSON输出包含类型信息。
+
+
+23、	ipfs mount
+用法
+ipfs mount - 将IPFS挂载到文件系统（只读）。
+使用范例
+ipfs mount [--ipfs-path=<ipfs-path> | -f] [--ipns-path=<ipns-path> | -n]
+选项
+选项标识	          选项类型	      介绍
+-f，--ipfs-path	   string	        IPFS将被挂载的路径
+-n, --ipns-path	    string	       IPNS将被挂载的路径
+描述
+用只读的挂载点将IPFS挂载到操作系统上。默认情况下，/ipfs 和 /ipns在配置文件中被设置，但可被选项覆盖。在这个目录下，所有IPFS对象都可达。注意，由于根目录是虚拟的，所以其不可列出的。请直接访问已知路径。
+在使用“ipfs mount”前，你可能需要创建/ipfs和/ipns：
+1.	 > sudo mkdir /ipfs /ipns
+2.	 > sudo chown `whoami` /ipfs /ipns
+3.	 > ipfs daemon &
+4.	 > ipfs mount
+举例：
+1.	# setup
+2.	> mkdir foo
+3.	> echo "baz" > foo/bar
+4.	> ipfs add -r foo
+5.	added QmWLdkp93sNxGRjnFHPaYg8tCQ35NBY3XPn6KiETd3Z4WR foo/bar
+6.	added QmSh5e7S6fdcu75LAbXNZAFY2nGyZUJXyLCJDvn2zRkWyC foo
+7.	> ipfs ls QmSh5e7S6fdcu75LAbXNZAFY2nGyZUJXyLCJDvn2zRkWyC
+8.	QmWLdkp93sNxGRjnFHPaYg8tCQ35NBY3XPn6KiETd3Z4WR 12 bar
+9.	> ipfs cat QmWLdkp93sNxGRjnFHPaYg8tCQ35NBY3XPn6KiETd3Z4WR
+10.	baz
+11.	
+12.	# mount
+13.	> ipfs daemon &
+14.	> ipfs mount
+15.	IPFS mounted at: /ipfs
+16.	IPNS mounted at: /ipns
+17.	> cd /ipfs/QmSh5e7S6fdcu75LAbXNZAFY2nGyZUJXyLCJDvn2zRkWyC
+18.	> ls
+19.	bar
+20.	> cat bar
+21.	baz
+22.	> cat /ipfs/QmSh5e7S6fdcu75LAbXNZAFY2nGyZUJXyLCJDvn2zRkWyC/bar
+23.	baz
+24.	> cat /ipfs/QmWLdkp93sNxGRjnFHPaYg8tCQ35NBY3XPn6KiETd3Z4WR
+25.	baz
+
+
+24、	ipfs name
+24.1、	ipfs name
+用法
+ipfs name - 发布并解析IPNS名。
+使用范例
+ipfs name
+描述
+IPNS是一个PKI命名空间，在这个空间里，名字是公钥的哈希，私钥能发布新的被签名的值。在发布和解析的过程中，默认使用的名字是节点自己公钥的哈希，也就是其PeerID。
+你可以用“ipfs key”名字列出并生成更多名字和相应的密钥。
+举例：
+用默认的名字发布一个<ipfs-path>。
+1.	> ipfs name publish /ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+2.	Published to QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n:/ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+用其他的名字发布一个<ipfs-path>，需要通过“ipfs key”命令添加。
+1.	> ipfs key gen --type=rsa --size=2048 mykey
+2.	> ipfs name publish --key=mykey /ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+3.	Published to QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n:/ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+解析你的名字的值。
+1.	> ipfs name resolve
+2.	/ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+解析其他名字的值。
+1.	> ipfs name resolve QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
+2.	/ipfs/QmSiTko9JZyabH56y2fussEt1A5oDqsFXB3CkvAqraFryz
+解析一个DNS链接的值。
+1.	> ipfs name resolve ipfs.io
+2.	/ipfs/QmaBvfZooxWkrv7D3r8LS9moNjzD2o525XMZze69hhoxf5
+子命令
+命令	                            介绍
+ipfs name publish <ipfs-path>	    发布IPNS名
+ipfs name resolve [<name>]	      解析IPNS名
+使用“ipfs name <subcmd> --help”来获取关于每条指令的更多信息。
+
+24.2、	ipfs name publish
+用法
+ipfs name publish <ipfs-path> - 发布IPNS名。
+使用范例
+ipfs name publish [--resolve=false] [--lifetime=<lifetime> | -t] [--ttl=<ttl>] [--key=<key> | -k] [--] <ipfs-path>
+参数
+<ipfs-path> - 要发布对象的IPFS路径。
+选项
+选项标识	          选项类型	   介绍
+--resolve	          bool	      在发布前解析给定的路径，缺省为true
+-t, --lifetime	    string	    该记录有效的持续时间，缺省为24h。该选项接受类似“300s”, “1.5h” or “2h45m”的时间。有效的时间单元为“ns” “us” (or “µs”), “ms”, “s”, “m”, “h”
+--ttl	              string	    该记录要被缓存的持续时间 (注意: 尚在实验)
+-k, --key	          string	    要使用的密钥名，就像“ipfs key list”列出的那样。缺省为自己
+描述
+IPNS是一个PKI命名空间，在此空间里，名字是公钥的哈希并且私钥能发布新的签名后的值。在发布和解析过程中，默认使用的名字是节点公钥哈希值，即节点自己的PeerID。
+你可以用“ipfs key”命令列出和生成更多名字和他们相应的密钥。
+举例：
+用默认的名字发布一个<ipfs-path>。
+1.	 > ipfs name publish /ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+2.	Published to QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n:/ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+用另一个名字发布<ipfs-path>，名字通过“ipfs key”名字添加。
+1.	> ipfs key gen --type=rsa --size=2048 mykey
+2.	> ipfs name publish --key=mykey /ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+3.	Published to QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n:/ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+
+24.3、	ipfs name pubsub
+用法
+ipfs name pubsub – IPNS发布/订阅管理。
+使用范例
+ipfs name pubsub
+描述
+管理并监督IPNS发布/订阅解析器的状态。
+注意：本命令是实验性的，将随着系统的改进而逐步完善。
+子命令
+命令	                              介绍
+ipfs name pubsub cancel <name>	    取消一个主题的订阅
+ipfs name pubsub state	            查询IPNS发布/订阅的状态
+ipfs name pubsub subs	              展示当前名称的订阅
+使用“ipfs name pubsub <子命令> --help”来查看关于每个命令的更多信息。
+
+24.4、	ipfs name pubsub cancel
+用法
+ipfs name pubsub cancel <name> - 取消一个主题的订阅
+使用范例
+ipfs name pubsub cancel [--] <name>
+参数
+<name> - 要取消的订阅的名称
+
+24.5、	ipfs name pubsub state
+用法
+ipfs name pubsub state - 查询IPNS发布/订阅的状态
+使用范例
+ipfs name pubsub state
+
+24.6、	ipfs name pubsub subs
+用法
+ipfs name pubsub subs - 展示当前名称的订阅
+使用范例
+ipfs name pubsub subs
+
+
+24.7、	ipfs name resolve
+用法
+ipfs name resolve [<name>] - 解析IPNS名。
+使用范例
+ipfs name resolve [--recursive | -r] [--nocache | -n] [--] [<name>]
+参数
+[<name>] - 要解析的IPNS名，默认为你自己节点的PeerID。
+选项
+选项标识	          选项类型	  介绍
+-r，--recursive	   bool	      持续解析，直到结果不是一个IPNS为止，缺省为false
+-n,--nocache	      bool	     不适用缓存的记录，缺省为false
+描述
+IPNS是一个PKI命名空间，在此空间里，名字是公钥的哈希并且私钥能发布新的签名后的值。在发布和解析过程中，默认使用的名字是节点公钥哈希值，即节点自己的PeerID。
+你可以用“ipfs key”命令列出和生成更多名字和他们相应的密钥。
+举例：
+解析你自己名字的值。
+1.	> ipfs name resolve
+2.	/ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+解析另一个名字的值。
+1.	> ipfs name resolve QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
+2.	/ipfs/QmSiTko9JZyabH56y2fussEt1A5oDqsFXB3CkvAqraFryz
+解析一个DNS链接的值。
+1.	> ipfs name resolve ipfs.io
+2.	/ipfs/QmaBvfZooxWkrv7D3r8LS9moNjzD2o525XMZze69hhoxf5
+
+
+25、	ipfs object
+25.1、	ipfs object
+用法
+ipfs object - 与IPFS对象交互。
+使用范例
+ipfs object
+描述
+“ipfs object”是一个用于操作DAG对象的管道命令。
+子命令
+命令	                              介绍
+ipfs object data <key>	            输出一个IPFS对象原始字节
+ipfs object diff <obj_a> <obj_b>	  展示两个IPFS对象的区别
+ipfs object get <key>	              根据<key>获取并序列化DAG节点
+ipfs object links <key>	            根据指定的对象，输出其链接指向的位置
+ipfs object new [<template>]	      根据一个IPFS模板创建一个新对象
+ipfs object patch	                  根据已有的默克尔有向无环图创建一个新的
+ipfs object put <data>	            讲输出存储为一个DAG对象，并打印其key
+ipfs object stat <key>	            根据<key>获取DAG节点，并获取其状态
+使用“ipfs object <subcmd> - -help”来查看关于每条命令的详细信息。
+
+25.2、	ipfs object data
+用法
+ipfs object data <key> - 输出一个IPFS对象的原始字节。
+使用范例
+ipfs object data [--] <key>
+参数
+<key> - 要获取的对象的key，以base58编码的多重哈希形式。
+描述
+“ipfs object data”是一个获取存储在DAG节点里原始字节的管道命令。他输出到stdout，并且<key>是一个base58编码的多重哈希。
+注意“--encoding”选项不影响输出，因为其输出是对象的原始数据。
+
+25.3、	ipfs object diff
+用法
+ipfs object diff <obj_a> <obj_b> - 展示两个IPFS对象的区别。
+使用范例
+ipfs object diff [--verbose | -v] [--] <obj_a> <obj_b>
+参数
+<obj_a> - 参照对象。
+<obj_b> - 要比较的对象。
+选项
+选项标识	        选项类型	  介绍
+-v, --verbose	    bool	     打印额外信息
+描述
+“ipfs object diff”是一个展示两个IPFS对象区别的命令。
+举例：
+1.	> ls foo
+2.	bar baz/ giraffe
+3.	> ipfs add -r foo
+4.	...
+5.	Added QmegHcnrPgMwC7tBiMxChD54fgQMBUecNw9nE9UUU4x1bz foo
+6.	>OBJ_A=QmegHcnrPgMwC7tBiMxChD54fgQMBUecNw9nE9UUU4x1bz
+7.	> echo "different content" > foo/bar
+8.	> ipfs add -r foo
+9.	...
+10.	Added QmcmRptkSPWhptCttgHg27QNDmnV33wAJyUkCnAvqD3eCD foo
+11.	> OBJ_B=QmcmRptkSPWhptCttgHg27QNDmnV33wAJyUkCnAvqD3eCD
+12.	> ipfs object diff -v $OBJ_A $OBJ_B
+13.	Changed "bar" from QmNgd5cz2jNftnAHBhcRUGdtiaMzb5Rhjqd4etondHHST8 to QmRfFVsjSXkhFxrfWnLpMae2M4GBVsry6VAuYYcji5MiZb.
+
+25.4、	ipfs object get
+用法
+ipfs object get <key> - 根据<key>获取并序列化DAG节点。
+使用范例
+ipfs object get [--] <key>
+参数
+<key> - 要获取的对象的Key，以base58编码的多重哈希形式。
+描述
+“ipfs object get”是一个获取DAG节点的管道命令。其根据“--encoding”执行的格式将DAG节点序列化。其输出到stdout，并且<key>是一个base58编码的多重哈希。
+本命令以下列编码输出数据：
+•	“protobuf”
+•	“json”
+•	“xml”
+•	（用“--encoding” 或 “--enc”指定）
+
+25.5、	ipfs object links
+用法
+ipfs object links <key> - 根据指定的对象，输出其链接指向的位置（译者注：ipfs存较大的文件采用分片存储，因此一个大文件会被拆成很多小文件，这里的链接即指向诸多小文件）。
+使用范例
+ipfs object links [--headers | -v] [--] <key>
+参数
+<key> - 要获取的对象的Key，以base58编码的多重哈希形式。
+选项
+选项标识	      选项类型	  介绍
+-v, --headers	  bool	     打印表头（哈希，大小，名字）。缺省为: false
+描述
+“ipfs object links”是一个从DAG节点获取链接的管道命令。它输出到stdout，并且<key>是一个base58编码的多重哈希。
+
+25.6、	ipfs object new
+用法
+ipfs object new [<template>] - 根据一个IPFS模板创建一个新对象。
+使用范例
+ipfs object new [--] [<template>]
+参数
+[<template>] - 要使用的模板，选填。
+描述
+“ipfs object new”是一个创建新DAG节点的管道命令。默认情况下它创建并返回一个新的空的默克尔有向无环图，但是你可以传入一个可选的模板参数来创建一个预先格式化的节点。
+可以使用的模板：
+1.	- unixfs-dir
+
+25.7、	ipfs object patch
+用法
+ipfs object patch - 基于已有的默克尔有向无环图对象，创建一个新的默克尔有向无环图对象。
+使用范例
+ipfs object patch
+描述
+“ipfs object patch <root> <cmd> <args>”是一个用来建立定制DAG对象的管道命令。它改变已有对象，创建新的对象。这是默克尔有向无环图层面上的修改对象（译者注：该命令本质是在不改变数据结构情况下，对默克尔有向无环图做调整）。
+子命令
+命令	                                              介绍
+ipfs object patch add-link <root> <name> <ref>	    在给定对象里添加一个链接
+ipfs object patch append-data <root> <data>	        向dag节点的数据段添加数据
+ipfs object patch rm-link <root> <link>	            从对象中移除一个链接
+ipfs object patch set-data <root> <data>	          设置一个IPFS对象的数据段
+使用“ipfs object patch <subcmd> --help”来查看关于每条命令的详细信息。
+
+25.8、	ipfs object patch add-link
+用法
+ipfs object patch add-link <root> <name> <ref> - 添加一个链接到给定的对象。
+使用范例
+ipfs object patch add-link [--create | -p] [--] <root> <name> <ref>
+参数
+<root> - 要调整的节点的哈希
+<name> - 要创建的链接的名字
+<ref>  - 要添加链接的IPFS对象
+选项
+选项标识	      选项类型	  介绍
+-p, --create	  bool	     创建中间人节点，缺省为: false
+描述
+添加一个默克尔链接到给定对象，并返回结果的哈希。
+举例：
+1.	$ EMPTY_DIR=$(ipfs object new unixfs-dir)
+2.	$ BAR=$(echo "bar" | ipfs add -q)
+3.	$ ipfs object patch $EMPTY_DIR add-link foo $BAR
+例子中添加 一个叫做“foo”的链接到一个空目录中，“foo”指向一个包含“bar”的文件，并且返回这个新对象的哈希。
+
+25.9、	ipfs object patch append-data
+用法
+ipfs object patch append-data <root> <data> - 向一个dag节点的数据段的末尾添加数据。
+使用范例
+ipfs object patch append-data [--] <root> <data>
+参数
+<root> - 要修改的节点的哈希。
+<data> - 要添加的数据。
+描述
+向给定的对象中已经存在的数据段中添加数据。
+举例：
+2.	$ echo "hello" | ipfs object patch $HASH append-data
+注意：这不是向文件中添加数据，它修改对象中的原始数据。此外，对象最大大小为1MB，大于1MB的对象将不会被网络认可。
+
+25.10、	ipfs object patch rm-link
+用法
+ipfs object patch rm-link <root> <link> - 从一个对象中移除一个链接。
+使用范例
+ipfs object patch rm-link [--] <root> <link>
+参数
+<root> - 要更改的节点的哈希。
+<link> - 要移除的链接的名字。
+描述
+从根移除给定的链接。
+
+25.11、	ipfs object patch set-data
+用法
+ipfs object patch set-data <root> <data> - 设置IPFS对象的数据域。
+使用范例
+ipfs object patch set-data [--] <root> <data>
+参数
+<root> - 要更改的节点的哈希。
+<data> - 要设置到对象的数据。
+描述
+根据stdin或文件的内容设置一个IPFS对象的数据。
+举例：
+1.	$ echo "my data" | ipfs object patch $MYHASH set-data
+
+25.12、	ipfs object put
+用法
+ipfs object put <data> - 将输入存储为一个DAG对象，并打印其key。
+使用范例
+ipfs object put [--inputenc=<inputenc>] [--datafieldenc=<datafieldenc>] [--] <data>
+参数
+<data> - 要存储为DAG对象的数据。
+选项
+选项标识	        选项类型	   介绍
+--inputenc	      string	    输入数据的编码类型。”protobuf”或 “json”，缺省为json。
+--datafieldenc	  string	    数据域的编码类型，”text”或”base64”， 缺省为text。
+描述
+“ipfs object put”是一个存储DAG节点的管道命令。它从stdin读数据，并且输出是一个base58编码的多重哈希。其中，数据应该是--inputenc指定的类型。
+举例：
+1.	$ echo '{ "Data": "abc" }' | ipfs object put
+这创建了一个节点，其数据为“abc”并且没有链接。对于一个由链接的对象，创建一个名为“node.json”并带有如下内容：
+1.	{
+2.	    "Data": "another",
+3.	    "Links": [ {
+4.	         "Name": "some link",
+5.	         "Hash": "QmXg9Pp2ytZ14xgmQjYEiHjVjMFXzCVVEcRTWJBmLgR39V",
+6.	         "Size": 8
+7.	          } ]
+8.	}
+然后执行
+1.	$ ipfs object put node.json
+
+25.13、	ipfs object stat
+用法
+ipfs object stat <key> - 获取名为<key>的DAG节点的状态。
+使用范例
+ipfs object stat [--] <key>
+参数
+<key> - 要获取的对象的key，以base58编码的多重哈希格式。
+描述
+“ipfs object stat”是一个打印DAG节点统计信息的管道命令。<key>是一个base58编码的多重哈希。命令输出到stdout：
+输出标识	       输出类型	  介绍
+NumLinks	      int     	 链接表中链接数
+BlockSize	      int	       原始编码数据的大小
+LinkSize	      int        链接段大小
+DataSize	      int	       数据段大小
+CumulativeSize	int	       对象及其参照的总大小
+
+
+26、	ipfs p2p
+26.1、	ipfs p2p
+用法
+ipfs p2p - Libp2p流安装。
+使用范例
+ipfs p2p
+描述
+通过libp2p创建和使用远程节点的通道。
+注意：这个命令是实验性的，将随着用例和API的改进而不断完善。
+子命令
+命令	                  介绍
+ipfs p2p listener	      P2P监听器管理
+ipfs p2p stream	        P2P流管理
+使用“ipfs p2p <子命令> --help”来查看关于每个命令的更多信息。
+
+26.2、	ipfs p2p listener
+用法
+ipfs p2p listener - P2P监听器管理。
+使用范例
+ipfs p2p listener
+描述
+创建并管理P2P端点监听器
+子命令
+命令	                                          介绍
+ipfs p2p listener close [<Protocol>]	          关闭已激活的P2P监听器
+ipfs p2p listener ls	                          监听已激活的P2P监听器
+ipfs p2p listener open <Protocol> <Address>	    转发P2P连接到网络的多重地址
+使用“ipfs p2p listener <子命令> --help”来查看关于每个命令的更多信息。
+
+26.3、	ipfs p2p listener close
+用法
+ipfs p2p listener close [<Protocol>] - 关闭已激活的P2P监听器。
+使用范例
+ipfs p2p listener close [--all | -a] [--] [<Protocol>]
+参数
+[<Protocol>] - P2P监听器协议
+选项
+选项标识	    选项类型	    介绍
+-a, --all	    bool	       关闭所有的监听器。
+
+26.4、	ipfs p2p listener ls
+用法
+ipfs p2p listener ls – 监听已激活的p2p监听器。
+使用范例
+ipfs p2p listener ls [--headers | -v]
+选项
+选项标识	        选项类型	  介绍
+-v, --headers	    bool	     打印表头（处理器ID、协议、本地、远程）。
+
+26.5、	ipfs p2p listener open
+用法
+ipfs p2p listener open <Protocol> <Address> - 转发P2P连接到网络的多重地址。
+使用范例
+ipfs p2p listener open [--] <Protocol> <Address>
+参数
+<Protocol> - 协议标识符
+<Address>  - 处理申请地址的请求
+描述
+注册一个p2p连接处理器并将连接转发到指定的地址。
+注意，连接源自ipfs守护进程。
+
+26.6、	ipfs p2p stream
+用法
+ipfs p2p stream - P2P流管理。
+使用范例
+ipfs p2p stream
+描述
+创建并管理p2p流。
+子命令
+命令	                                                      介绍
+ipfs p2p stream close [<HandlerID>]	                        关闭已激活的p2p流。
+ipfs p2p stream dial <Peer> <Protocol> [<BindAddress>]	    拨号到P2P监听器。
+ipfs p2p stream ls	                                        列出已激活的p2p流。
+使用“ipfs p2p stream <子命令> --help”来查看关于每个命令的更多信息。
+
+26.7、	ipfs p2p stream close
+用法
+ipfs p2p stream close [<HandlerID>] – 关闭已激活的p2p流
+使用范例
+ipfs p2p stream close [--all | -a] [--] [<HandlerID>]
+参数
+[<HandlerID>] – 流处理器ID
+选项
+选项标识	    选项类型	   介绍
+-a, --all	    bool	      关闭所有流。
+
+26.8、	ipfs p2p stream dial
+用法
+ipfs p2p stream dial <Peer> <Protocol> [<BindAddress>] - 拨号到P2P监听器。
+使用范例
+ipfs p2p stream dial [--] <Peer> <Protocol> [<BindAddress>]
+参数
+<Peer>          - 需要连接的远程节点。
+<Protocol>      - 协议标识符。
+[<BindAddress>] – 为了连接而监听的地址(缺省为：/ip4/127.0.0.1/tcp/0)。
+描述
+建立新连接到节点服务。
+当与节点服务建立连接时，ipfs守护程序将设置一次性TCP侦听程序并返回其绑定端口，使得拨号应用程序可以透明地连接到一个p2p服务。
+
+26.9、	ipfs p2p stream ls
+用法
+ipfs p2p stream ls – 监听已激活的p2p流。
+使用范例
+ipfs p2p stream ls [--headers | -v]
+选项
+选项标识	         选项类型	      介绍
+-v, --headers	     bool	         打印表头（处理器ID、协议、本地、远程）。
+
+
+
+
+27、	ipfs pin
+27.1、	ipfs pin
+用法
+ipfs pin - 将对象绑定到本地存储上或解绑。
+使用范例
+ipfs pin
+子命令
+命令	                            介绍
+ipfs pin add <ipfs-path>…	        将对象绑定到本地存储
+ipfs pin ls [<ipfs-path>]…	      列出绑定到本地存储的对象
+ipfs pin rm <ipfs-path>…	        从本地存储移除绑定的对象
+使用 “ipfs pin <subcmd> --help”来查看关于每条命令的详细信息。
+
+27.2、	ipfs pin add
+用法
+ipfs pin add <ipfs-path>… - 将对象绑定到本地存储。
+使用范例
+ipfs pin add [--recursive=false] [--progress] [--] <ipfs-path>…
+参数
+<ipfs-path>… - 要绑定的对象的路径。
+选项
+选项标识	          选项类型	    介绍
+-r, --recursive	    bool	       根据指定的对象，递归的讲链接的对象绑定，缺省为true
+--progress	bool	展示进程
+描述
+从给定路径将一个IPFS对象存储到本地磁盘。
+
+27.3、	ipfs pin ls
+用法
+ipfs pin ls [<ipfs-path>]… - 列出绑定到本地存储的对象。
+使用范例
+ipfs pin ls [--type=<type> | -t] [--quiet | -q] [--] [<ipfs-path>…]
+参数
+[<ipfs-path>]… - 要列出的对象的路径。
+选项
+选项标识	      选项类型	    介绍
+-t, --type	    string	     要列出的绑定的key的类型。可以是“direct”， “indirect”，“recursive”或“all”，缺省为all
+-q, --quiet	    bool	       仅仅写入对象的哈希。缺省为false
+描述
+返回被绑定到本地的对象列表。默认情况下，所有绑定的对象都被返回，但是“—type”或其他参数可以限制返回的具体绑定类型。
+使用--type=<type>指定要列出的绑定的keys的类型。
+合法的值有：
+•	“direct”：绑定的具体的对象。
+•	“recursive”: 绑定的具体的对象，以及间接绑定的其所有后代。
+•	“indirect”: 由一个祖先间接绑定（就像一个引用计数）
+•	“all”
+•	在带参数情况下，如果任何参数不是一个绑定的对象，命令将会失败。如果—type=<type>被额外使用，那么如果任何参数不是指定类型的话该命令将失败。
+举例：
+1.	$ echo "hello" | ipfs add -q
+2.	QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN
+3.	$ ipfs pin ls
+4.	QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN recursive
+现在移除绑定，并重新进行直接绑定。
+1.	$ ipfs pin rm QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN
+2.	unpinned QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN
+3.	$ ipfs pin add -r=false QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN
+4.	pinned QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN directly
+5.	$ ipfs pin ls --type=direct
+6.	QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN direct
+7.	$ ipfs pin ls QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN
+8.	QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN direct
+
+27.4、	ipfs pin rm
+用法
+ipfs pin rm <ipfs-path>… - 从本地存储中移除绑定的对象。
+使用范例
+ipfs pin rm [--recursive=false] [--] <ipfs-path>…
+参数
+<ipfs-path>… - 要解绑的对象的路径。
+选项
+选项标识	          选项类型	    介绍
+-r, --recursive	    bool	       递归解绑链接到指定对象的对象，缺省为true
+描述
+从给定对象解除绑定，同时允许其被做垃圾收集（默认情况下，递归操作。使用-r=false来进行直接绑定）。
+
+27.5、	ipfs pin update
+用法
+ipfs pin update <from-path> <to-path> - 更新递归固定
+使用范例
+ipfs pin update [--unpin=false] [--] <from-path> <to-path>
+参数
+<from-path> - 旧对象的路径。
+<to-path>   - 要固定的新对象的路径。
+选项
+--unpin bool - 移除旧固定。缺省为true。
+描述
+将一个固定更新为另一个固定，以保证新固定中的所有对象都是本地的。然后删除旧的固定。这是添加新固定并删除旧固定的优化版本。
+
+27.6、	ipfs pin verify
+用法
+ipfs pin verify – 验证递归固定是否完成。
+使用范例
+ipfs pin verify [--verbose] [--quiet | -q]
+选项
+选项标识	      选项类型	   介绍
+--verbose	      bool	      同时还写出未损坏的固定物的哈希。
+-q, --quiet	    bool	      只写出损坏的固定物的哈希。
+
+
+28、	ipfs ping
+用法
+ipfs ping <peer ID>… - 向IPFS主机发送响应请求包。
+使用范例
+ipfs ping [--count=<count> | -n] [--] <peer ID>…
+参数
+<peer ID>… - 要ping的节点ID。
+选项
+选项标识	      选项类型	    介绍
+-n, --count	    int	         要发送的ping消息数，缺省为10
+描述
+“ipfs ping”是一个测试向其他节点发送数据的工具。它通过路由系统发现节点，发送pings，等待响应，并打印往返延迟信息。
+
+
+29、	ipfs pubsub
+29.1、	ipfs pubsub
+用法
+ipfs pubsub - 一个实验性IPFS上的发布-订阅系统。
+使用范例
+ipfs pubsub
+描述
+“ipfs pubsub”允许你发布消息到给定的主题，并订阅给定主题的新消息。
+这是一个实验性的特征，暂时不适合用于实际生产环境。
+要使用的话，后台进程必须以“--enable-pubsub-experiment”形式执行。
+子命令
+命令	                                介绍
+ipfs pubsub ls	                      根据名字列出订阅的主题
+ipfs pubsub peers [<topic>]	          列出我们目前pubsub的节点
+ipfs pubsub pub <topic> <data>…	      向一个给定的pubsub主题发布一个消息
+ipfs pubsub sub <topic>	              订阅给定主题的消息
+使用“ipfs pubsub <subcmd> --help”来查看关于每条命令的详细信息。
+
+29.2、	ipfs pubsub ls
+用法
+ipfs pubsub ls - 根据名字列出订阅的主题。
+使用范例
+ipfs pubsub ls
+描述
+“ipfs pubsub ls”列出你目前订阅的主题名。
+这是一个实验性的特征，暂时不适合用于实际生产环境。
+要使用的话，后台进程必须以“--enable-pubsub-experiment”形式执行。
+
+29.3、	ipfs pubsub peers
+用法
+ipfs pubsub peers [<topic>] - 列出你目前pubsub的节点。
+使用范例
+ipfs pubsub peers [--] [<topic>]
+参数
+[<topic>] - 列出连接的节点中订阅该topic的节点。
+描述
+“ipfs pubsub peers”不带参数的话列出你目前连接到的pubsub节点。如果给定了一个主题，那将列出连接的节点中订阅该主题的节点。
+这是一个实验性的特征，暂时不适合用于实际生产环境。
+要使用的话，后台进程必须以“--enable-pubsub-experiment”形式执行。
+
+29.4、	ipfs pubsub pub
+用法
+ipfs pubsub pub <topic> <data>… - 发布消息到给定的pubsub主题。
+使用范例
+ipfs pubsub pub [--] <topic> <data>…
+参数
+<topic> - 要发布的主题。
+<data>… - 要发布的消息数据。
+描述
+“ipfs pubsub pub”发布消息到给定的主题。
+这是一个实验性的特征，暂时不适合用于实际生产环境。
+要使用的话，后台进程必须以“--enable-pubsub-experiment”形式执行。
+
+29.5、	ipfs pubsub sub
+用法
+ipfs pubsub sub <topic> - 订阅给定主题的消息。
+使用范例
+ipfs pubsub sub [--discover] [--] <topic>
+参数
+<topic> - 要订阅的主题的字符串名。
+选项
+选项标识	      选项类型	    介绍
+--discover	    bool	       尝试寻找订阅相同主题的其他节点
+描述
+“ipfs pubsub sub”订阅给定主题的消息。
+这是一个实验性的特征，暂时不适合用于实际生产环境。
+要使用的话，后台进程必须以“--enable-pubsub-experiment”形式执行。
+
+
+30、	ipfs refs
+30.1、	ipfs refs
+用法
+ipfs refs <ipfs-path>… - 列出一个对象参考的链接（译者注：列出一个对象的子对象链接）
+使用范例
+ipfs refs [--format=<format>] [--edges | -e] [--unique | -u] [--recursive | -r] [--] <ipfs-path>…
+参数
+<ipfs-path>… - 要列出refs的对象的路径。
+选项
+选项标识	        选项类型	    介绍
+--format	        string	     给定格式下的发出边。可使用的符号：<src> <dst> <linkname>。缺省为<dst>
+-e, --edges	      bool	       发出边的格式：<from> -> <to>，缺省为false
+-u, --unique	    bool	       忽略输出中重复的refs，缺省为false
+-r,--recursive	  bool	       递归列出子节点的链接，缺省为false
+描述
+列出一个IPFS或IPNS对象包含的所有链接的哈希，以下列格式：
+1.	<link base58 hash>
+注意：用“-r”递归列出所有的链接。
+子命令
+命令	                介绍
+ipfs refs local	      列出所有本地的链接
+使用“ipfs refs <subcmd> --help”来查看关于每条命令的详细信息。
+
+30.2、	ipfs refs local
+用法
+ipfs refs local - 列出所有本地链接。
+使用范例
+ipfs refs local
+描述
+列出所有本地对象的哈希。
+
+
+31、	ipfs repo
+31.1、	ipfs repo
+用法
+ipfs repo - 操做IPFS仓库。
+使用范例
+ipfs repo
+描述
+“ipfs repo”是一个操作仓库的管道命令。
+子命令
+命令	                介绍
+ipfs repo fsck	      移除仓库锁定文件
+ipfs repo gc	        对仓库进行垃圾清理
+ipfs repo stat	      获取目前使用仓库的状态
+ipfs repo verify	    验证所有仓库中的区块没有损坏
+ipfs repo version	    展示仓库版本
+使用“ipfs repo <subcmd> --help”来查看关于每条命令的详细信息。
+
+31.2、	ipfs repo fsck
+用法
+ipfs repo fsck - 移除仓库锁定文件。
+使用范例
+ipfs repo fsck
+描述
+“ipfs repo fsck”是一个移除仓库和levelDB中锁定文件及api文件的管道命令。该命令只能在IPFS后台进程未运行的情况下执行。
+
+31.3、	ipfs repo gc
+用法
+ipfs repo gc - 在仓库中进行垃圾清理。
+使用范例
+ipfs repo gc [--quiet | -q] [--stream-errors]
+选项
+选项标识	          选项类型	   介绍
+-q, --quiet	        bool	      最小化输出，缺省为false
+--stream-errors	    bool	      流错误，缺省为false
+
+31.4、	ipfs repo stat
+用法
+ipfs repo stat - 获取目前使用的仓库的状态。
+使用范例
+ipfs repo stat [--human]
+选项
+选项标识	    选项类型	    介绍
+--human	      bool	       用MiB形式输出仓库大小，缺省为false
+描述
+“ipfs repo stat”是一个扫描本地存储对象集并打印仓库统计数据的管道命令。它输出到stdout：
+输出标识	输出类型	介绍
+NumObjects	int	本地仓库对象的数目
+RepoPath	string	目前使用的仓库的路径
+RepoSize	int	仓库目前所占大小
+Version	string	仓库版本
+
+31.5、	ipfs repo verify
+用法
+ipfs repo verify - 验证仓库中所有区块没有损坏。
+使用范例
+ipfs repo verify
+
+31.6、	ipfs repo version
+用法
+ipfs repo version - 展示仓库版本。
+使用范例
+ipfs repo version [--quiet | -q]
+选项
+选项标识	      选项类型	     介绍
+-q, --quiet	    bool	        最小化输出
+描述
+“ipfs repo version”返回目前仓库的版本。
+
+
+32、	ipfs resolve
+用法
+ipfs resolve <name> - 将名字的值解析为IPFS。
+使用范例
+ipfs resolve [--recursive | -r] [--] <name>
+参数
+<name> - 要解析的名字。
+选项
+选项标识	          选项类型	    介绍
+-r, --recursive	    bool	       持续解析直到结果是一个IPFS名，缺省为false
+描述
+有很多可变名称协议能链接他们自身和IPFS。例如IPFS参照能指向一个IPNS对象，DNS链接能指向其他DNS链接、IPNS入口或IPFS对象。这条命令接受任何这些身份作为输入并且将其进行解析。
+举例：
+解析你身份的值：
+1.	$ ipfs resolve /ipns/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+2.	/ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
+解析其他名字的值：
+1.	$ ipfs resolve /ipns/QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n
+2.	/ipns/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+递归解析其他名字的值：
+1.	$ ipfs resolve -r /ipns/QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n
+2.	/ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
+解析一个IPFS有向无环图路径的值：
+1.	$ ipfs resolve /ipfs/QmeZy1fGbwgVSrqbfh9fKQrAWgeyRnj7h8fsHS1oy3k99x/beep/boop
+2.	/ipfs/QmYRMjyvAiHKN9UTi8Bzt1HUspmSRD8T8DwxfSMzLgBon1
+
+
+33、	ipfs shutdown
+用法
+ipfs shutdown – 关闭ipfs守护进程。
+使用范例
+ipfs shutdown
+
+
+34、	ipfs stats
+34.1、	ipfs stats
+用法
+ipfs stats - 获取IPFS统计数据。
+使用范例
+ipfs stats
+描述
+“ipfs stats”是帮助查看你的IPFS节点统计数据的一系列命令。
+子命令
+命令	                    介绍
+ipfs stats bitswap	      展示一些bitswap代理上的统计数据
+ipfs stats bw	            打印IPFS带宽信息
+ipfs stats repo	          获取目前使用的仓库的状态
+使用“ipfs stats <subcmd> --help”来查看关于每条命令的详细信息。
+
+34.2、	ipfs stats bitswap
+用法
+ipfs stats bitswap - 展示bitswap代理商的统计数据信息。
+使用范例
+ipfs stats bitswap
+
+34.3、	ipfs stats bw
+用法
+ipfs stats bw - 打印IPFS带宽信息。
+使用范例
+ipfs stats bw [--peer=<peer> | -p] [--proto=<proto> | -t] [--poll] [--interval=<interval> | -i]
+选项
+选项标识	        选项类型	     介绍
+-p, --peer	      string	      指定要打印带宽的节点
+-t, --proto	      string	      指定要打印带宽的协议
+--poll	          bool	        每隔一段时间打印带宽，缺省为false
+-i, --interval	  string	      在“poll”为true的情况下使用，用于设定更新输出的时间间隔（接受类似“300s”，“1.5h”或“2h45m”的输入。合法的单元有：“ns”，“us”或“µs”，“ms”，“s”，“m”，“h”，缺省为“1s”）
+描述
+“ipfs stats bw”打印带宽信息。它展示：TotalIn，TotalOut，RateIn，RateOut。
+默认情况下，总体带宽和所有协议都被展示。要限制只展示特定节点的带宽，用“peer”选项加上节点的多重哈希id。要指定具体的协议的话，用“proto”选项。“peer”和“proto”选项不能被同时使用。可以指定的协议在这：https://github.com/libp2p/specs/blob/master/7-properties.md#757-protocol-multicodecs
+可以指定的几个协议：
+•	/ipfs/id/1.0.0
+•	/ipfs/bitswap
+•	/ipfs/dht
+举例：
+1.	> ipfs stats bw -t /ipfs/bitswap
+2.	Bandwidth
+3.	TotalIn: 5.0MB
+4.	TotalOut: 0B
+5.	RateIn: 343B/s
+6.	RateOut: 0B/s
+7.	> ipfs stats bw -p QmepgFW7BHEtU4pZJdxaNiv75mKLLRQnPi1KaaXmQN4V1a
+8.	Bandwidth
+9.	TotalIn: 4.9MB
+10.	TotalOut: 12MB
+11.	RateIn: 0B/s
+12.	RateOut: 0B/s
+
+34.4、	ipfs stats repo
+用法
+ipfs stats repo - 获取目前使用的仓库的状态。
+使用范例
+ipfs stats repo [--human]
+选项
+选项标识	    选项类型	    介绍
+--human	      bool	       用MiB形式输出仓库大小，缺省为false
+描述
+“ipfs repo stat”是一个扫描本地存储对象并打印仓库统计数据的管道命令。它输出到stdout：
+输出标识	    输出类型	    介绍
+NumObjects	  int	         本地仓库对象的数目
+RepoPath	    string	     目前使用的仓库的路径
+RepoSize	    int	         仓库目前所占大小
+Version	      string	     仓库版本
+
+
+35、	ipfs swarm
+35.1、	ipfs swarm
+用法
+ipfs swarm - 与群交互。
+使用范例
+ipfs swarm
+描述
+“ipfs swarm”是一个操作网络群的工具。群是开启、监听、维持与网络中其他IPFS节点连接的组件。
+子命令
+命令	                                介绍
+ipfs swarm addrs	                    列出已知地址，对debug非常有用
+ipfs swarm connect <address>…	        开启一个到给定地址的连接
+ipfs swarm disconnect <address>…	    关闭到给定地址的连接
+ipfs swarm filters	                  操作地址过滤器
+  ipfs swarm peers	                  列出开启连接的节点
+使用“ipfs swarm <subcmd> --help”来查看关于每条命令的详细信息。
+
+35.2、	ipfs swarm addrs
+用法
+ipfs swarm addrs - 列出已知地址，对debug非常有用。
+使用范例
+ipfs swarm addrs
+描述
+“ipfs swarm addrs”列出该节点注意到的所有地址。
+子命令
+命令	                      介绍
+ipfs swarm addrs local	    列出本地地址
+使用“ipfs swarm <subcmd> --help”来查看关于每条命令的详细信息。
+
+35.3、	ipfs swarm addrs listen
+用法
+ipfs swarm addrs listen –列出接口监听的地址的表单。
+使用范例
+ipfs swarm addrs listen
+描述
+“ipfs swarm addrs listen”列出节点正在监听的所有接口地址。
+
+35.4、	ipfs swarm addrs local
+用法
+ipfs swarm addrs local - 列出本地地址。
+使用范例
+ipfs swarm addrs local [--id]
+选项
+选项标识	  选项类型	    介绍
+--id	      bool	       以地址方式展示节点ID，缺省为false
+描述
+“ipfs swarm addrs local”列出节点正监听的所有本地地址。
+
+35.5、	ipfs swarm connect
+用法
+ipfs swarm connect <address>… - 打开一个到给定地址的连接。
+使用范例
+ipfs swarm connect [--] <address>…
+参数
+<address>… - 要连接到的节点的地址。
+描述
+“ipfs swarm connect”打开一个到节点地址的直接连接。地址格式是一个IPFS多重地址：
+1.	ipfs swarm connect/ip4/104.131.131.82/tcp/4001/ipfs/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
+
+35.6、	ipfs swarm disconnect
+用法
+ipfs swarm disconnect <address>… - 关闭到给定地址的连接。
+使用范例
+ipfs swarm disconnect [--] <address>…
+参数
+<address>… - 要断开连接的节点地址。
+描述
+“ipfs swarm disconnect”关闭到节点地址的连接。地址格式是一个IPFS多重地址：
+1.	ipfs swarm disconnect/ip4/104.131.131.82/tcp/4001/ipfs/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
+断开连接不是永久的，如果IPFS需要与该地址通信，它将会重连。
+
+35.7、	ipfs swarm filters
+用法
+ipfs swarm filters - 操作地址过滤器。
+使用范例
+ipfs swarm filters
+描述
+“ipfs swarm filters”将列出目前应用的过滤器。它的子命令可以被用于添加或移除过滤器。过滤器使用多重地址过滤器的格式来指定：
+1.	/ip4/192.168.0.0/ipcidr/16
+上面的等价于标准CIDR：
+1.	192.168.0.0/16
+过滤器默认为在“Swarm.AddrFilters”配置项指定下的那些。
+子命令
+命令	                                  介绍
+ipfs swarm filters add <address>…	      添加地址过滤器
+ipfs swarm filters rm <address>…	      移除地址过滤器
+使用“ipfs swarm filters <subcmd> --help”来查看关于每条命令的详细信息。
+
+35.8、	ipfs swarm filters add
+用法
+ipfs swarm filters add<address>… - 添加一个地址过滤器。
+使用范例
+ipfs swarm filters add [--] <address>…
+参数
+<address>… - 要过滤的多重地址。
+描述
+“ipfs swarm filters add”将向后台群添加一个地址过滤器。以这种方式应用的过滤器在后台进程重启时不会持续。要想使其持续的话，将过滤器添加到IPFS配置文件。
+
+35.9、	ipfs swarm filters rm
+用法
+ipfs swarm filters rm<address>… - 移除一个地址过滤器。
+使用范例
+ipfs swarm filters rm [--] <address>…
+参数
+<address>… - 要移除的过滤器的多重地址。
+描述
+“ipfs swarm filters rm”将从后台群中移除一个地址过滤器。用这种方式移除的过滤器在后台进程重启后不会持续。要想持续的话，从IPFS配置文件中移除过滤器。
+
+35.10、	ipfs swarm peers
+用法
+ipfs swarm peers - 列出开启连接的节点。
+使用范例
+ipfs swarm peers [--verbose | -v] [--streams] [--latency]
+选项
+选项标识	        选项类型	   介绍
+-v, --verbose	    bool	      展示所有额外信息
+--streams	        bool	      同时列出关于每个节点开放流的信息
+--latency	        bool	      同时列出关于每个节点的延迟
+描述
+“ipfs swarm peers”列出这个节点连接的节点集合。
+
+
+36、	ipfs tar
+36.1、	ipfs tar
+用法
+ipfs tar - IPFS中tar文件的实用函数。
+使用范例
+ipfs tar
+子命令
+命令	                  介绍
+ipfs tar add <file>	    将一个tar文件导入IPFS
+ipfs tar cat <path>	    将一个tar文件从IPFS导出
+使用“ipfs tar <subcmd> --help”来查看关于每条命令的详细信息。
+
+36.2、	ipfs tar add
+用法
+ipfs tar add <file> - 将一个tar文件导入IPFS。
+使用范例
+ipfs tar add [--] <file>
+参数
+<file> - 要添加的tar文件。
+描述
+“ipfs tar add”将解析一个tar文件并创建一个默克尔有向无环图结构来代表它。
+
+36.3、	ipfs tar cat
+用法
+ipfs tar cat <path> - 从IPFS导出一个tar文件。
+使用范例
+ipfs tar cat [--] <path>
+参数
+<path> - 要导出的IPFS文件路径。
+描述
+“ipfs tar cat”将从先前导入IPFS的tar文件中导出一个tar文件。
+
+
+37、	ipfs update
+描述
+“ipfs update”是一个外部命令。它目前没有被安装，请参照IPFS文档以寻找更多指导。
+
+
+38、	ipfs version
+用法
+ipfs version - 展示IPFS版本信息。
+使用范例
+ipfs version [--number | -n] [--commit] [--repo] [--all]
+选项
+选项标识	      选项类型	    介绍
+-n, --number	  bool	       仅仅打印版本号，缺省为false
+--commit	      bool	       展示提交哈希，缺省为false
+--repo	        bool	       展示仓库版本，缺省为false
+--all	          bool	       展示所有版本信息，缺省为false
+描述
+返回目前IPFS的版本。
