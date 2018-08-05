@@ -51,4 +51,4 @@ resolve()中有个DAGNode类型判断type = typeOf(node)，根据类型的不同
 
 下次再看dag.get()怎么获得DAGNode。
 
-个人微信：xxb3059 & 公众号：区块丛林 欢迎交流
+**个人微信：xxb3059 & 公众号：区块丛林 欢迎交流**
