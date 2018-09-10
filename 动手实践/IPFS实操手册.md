@@ -37,13 +37,13 @@ ipfs节点：Qmc2AH2MkZtwa11LcpHGE8zW4noQrn6xue7VcZCMNYTpuP
 该工具的安装下载使用go。不会安装的朋友自行Google，本文不在讲解。
 
 ```
-go get -u github.com/Kubuxu/go-ipfs-swarm-key-gen/ipfs-swarm-key-gen1
+go get -u github.com/Kubuxu/go-ipfs-swarm-key-gen/ipfs-swarm-key-gen
 ```
 
 然后创建密钥：
 
 ```
-ipfs-swarm-key-gen > ~/.ipfs/swarm.key1
+ipfs-swarm-key-gen > ~/.ipfs/swarm.key
 ```
 
 注意：小编创建完密钥放在了自己的ipfs默认配置文件夹下面（~/.ipfs/）
@@ -53,15 +53,15 @@ ipfs-swarm-key-gen > ~/.ipfs/swarm.key1
 小编直接使用了scp上传到了其他三台亚马逊的服务器上面：
 
 ```
-scp -i ss-server.pem ~/.ipfs/swarm.key ubuntu@13.114.30.87:~/.ipfs/1
+scp -i ss-server.pem ~/.ipfs/swarm.key ubuntu@13.114.30.87:~/.ipfs/
 ```
 
 ```
-scp -i ss-server.pem ~/.ipfs/swarm.key ubuntu@13.230.162.124:~/.ipfs/1
+scp -i ss-server.pem ~/.ipfs/swarm.key ubuntu@13.230.162.124:~/.ipfs/
 ```
 
 ```
-scp -i ss-server.pem ~/.ipfs/swarm.key ubuntu@13.231.247.2:~/.ipfs/1
+scp -i ss-server.pem ~/.ipfs/swarm.key ubuntu@13.231.247.2:~/.ipfs/
 ```
 
 由于小编的亚马逊服务器ipfs节点初始化的时候都是采用的默认设置(ipfs init)
@@ -75,7 +75,7 @@ ipfs init后的默认启动节点是连接ipfs公网的节点，如果要连接�
 在每一个节点执行下面的操作，删除掉所有的默认启动节点。
 
 ```
-ipfs bootstrap rm —all1
+ipfs bootstrap rm —all
 ```
 
 然后添加一个自己的默认节点(私有网络中的一个节点)，默认节点可以是A，B，C，D中的任何一个。
