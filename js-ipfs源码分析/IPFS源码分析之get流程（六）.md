@@ -49,6 +49,7 @@
 23行调用net模块的net.createServer()函数创建服务器，返回一个监听套接字socket，这个套接字进程就一直运行着，如果有连接过来，27行的getMultiaddr(socket)函数就能获得这条连接的对方地址，然后trackSocket(server, socket)函数将这条连接和对应地址保存，最后是40行handler(conn)函数用上层逻辑处理这条连接。所以关键还是连接处理函数如何处理收到的消息。
 
 刚刚说到由swtch.protocolMuxer(key)将默认的连接处理函数取出，在switch模块的构造函数中可以看到这个函数的来源，this.protocolMuxer = ProtocolMuxer(this.protocols, this.observer)，这里的this.protocols参数本身是个列表，装着不同版本Bitswap协议的连接的处理函数，在《IPFS源码分析之Bitswap层（二）》的Fig 8是Bitswap层的network模块的启动代码，其中有一行：this.libp2p.handle(BITSWAP100, this._onConnection)，当然还有相似的另外一行调用，只是参数变成BITSWAP110。libp2p.handle()函数将使用两个版本Bitswap协议的连接的处理函数装入到switch模块的protocols列表中，但是这两个版本的连接的处理函数都一样是this._onConnection()。先继续看具体看看ProtocolMuxer()函数的内部逻辑：
+
 ![](https://i.imgur.com/nHC3Tev.png)
  
 								Fig 9 libp2p-switch/src/protocol-muxer.js
