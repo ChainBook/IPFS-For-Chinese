@@ -56,9 +56,9 @@ Filecoin协议由四个新型组件组成
 
 *图一是使用了术语定义之后的Filecoin协议草图，伴随着一个例子如图2所示*
 
-![filecoin-图1.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bd972e4cc5.png)
+![filecoin-图1.png](https://i.imgur.com/0tvbeaj.png)
 
-![filecoin-图2.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bd98383339.png)
+![filecoin-图2.png](https://i.imgur.com/a5poxzI.png)
 
 ### **1.3 论文组织**
 
@@ -184,9 +184,9 @@ PDP和PoR方案只保证了证明人在响应的时候拥有某些数据。在Fi
 
 ​    我们感兴趣的是PoRep和PoSt的应用构建，可以应用于现存系统并且不依赖于可信任的第三方或者硬件。我们给出了PoRep的一个构建（请参见基于密封的复制证明[5]),它在Setup过程中需要一个非常慢的顺序计算密封的执行来生成副本。PoRep和PoSt的协议草图在图4给出，Post的底层机制的证明步骤在图3中。
 
-![filecoin-图3.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bda2a16ed6.png)
+![filecoin-图3.png](https://i.imgur.com/GdA3naW.png)
 
-![filecoin-图4.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bda34b254b.png)
+![filecoin-图4.png](https://i.imgur.com/R1Ahil7.png)
 
 #### **3.4.1 构建加密区块**
 
@@ -330,7 +330,7 @@ Filecoin DSN是可升级，可公开验证和激励式设计的去中心化的�
 
 **抵押** 抵押是像网络提供存储（特别是扇区）的承诺。存储矿工必须将抵押提交给账本，以便能在存储市场接受订单。抵押包括了抵押扇区的大小和存储矿工的存放的抵押品。
 
-![filecoin-图5.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599be6f7887cd.png)
+![filecoin-图5.png](https://i.imgur.com/OpmSztq.png)
 
 ### **4.3 协议**
 
@@ -508,7 +508,7 @@ Filecoin DSN是可升级，可公开验证和激励式设计的去中心化的�
    - 如果大量证明丢失或无效（由系统参数Δfault定义），网络会认定存储矿工存在故障，将订单设定为失败，并为同样的数据引入新订单进入市场。
    - 如果所有存储该数据的存储矿工都有故障，则该数据丢失，客户获得退款。
 
-![filecoin-图6.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bea53caabe.png)
+![filecoin-图6.png](https://i.imgur.com/boQlbfm.png)
 
 ### **4.4 担保和要求**
 
@@ -520,9 +520,9 @@ Filecoin DSN是可升级，可公开验证和激励式设计的去中心化的�
 - 实现激励兼容性 不正式的说，矿工通过提供存储而获得奖励。当矿工承诺存储一些数据的时候，它们需要生成证明。如果矿工忽略了证明就会被惩罚（通过损失部分抵押品），并且不会收到存储的奖励。
 - 实现保密性 如果客户希望他们的数据被隐私存储，那客户必须在数据提交到网络之前先进行加密。
 
-![filecoin-图7.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bea72170c6.png)
+![filecoin-图7.png](https://i.imgur.com/XTEN2RW.png)
 
-![filecoin-图8.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bea7ef1f4c.png)
+![filecoin-图8.png](https://i.imgur.com/Fpu506j.png)
 
 
 
@@ -538,7 +538,9 @@ Filecoin有两个市场：存储市场和检索市场。这两个市场有同样
 
 **定义5.1**
 
-可验证市场是一个有两个阶段的协议：订单匹配和结算。订单是购买意图或者出售商品或服务安全性的表述，订单簿就是所有可用订单的列表。![WX20180523-165539@2x](../PIC/WX20180523-165539@2x.png)
+可验证市场是一个有两个阶段的协议：订单匹配和结算。订单是购买意图或者出售商品或服务安全性的表述，订单簿就是所有可用订单的列表。
+
+![filecoin-图9.png](https://i.imgur.com/pWG724b.png)
 
 ### **5.2 存储市场**
 
@@ -581,7 +583,7 @@ Filecoin有两个市场：存储市场和检索市场。这两个市场有同样
 
 如果作恶客户端从存储矿工出收到了签名的交易，但从来没有将其添加到订单簿，那么存储矿工就无法重新使用订单中提交的存储。这个字段ts就可以防止这种攻击，因为，在超过ts之后，订单变得无效，将无法在订单簿中提交。
 
-![filecoin-图10.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599becba28c09.png)
+![filecoin-图10.png](https://i.imgur.com/68MRRSj.png)
 
 #### **5.2.3 存储市场协议**
 
@@ -610,7 +612,7 @@ Filecoin有两个市场：存储市场和检索市场。这两个市场有同样
 
 **获取订单簿** 检索市场的订单簿是有效的和公开出价订单，询价订单和交易订单的集合。与存储市场不同，每个用户有不同的订单簿试图，因为订单是在网络中传播的，每个矿工和客户端只会跟踪他们所感兴趣的订单。
 
-![filecoin-图11.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bed0718a75.png)
+![filecoin-图11.png](https://i.imgur.com/4cPp55U.png)
 
 #### **5.3.3 检索市场协议**
 
@@ -622,7 +624,7 @@ Filecoin有两个市场：存储市场和检索市场。这两个市场有同样
 
 该协议在图12中详细解释。
 
-![filecoin-图12.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bed2f74ca0.png)
+![filecoin-图12.png](https://i.imgur.com/odBWQOA.png)
 
 ## **6 有用工作共识**
 
@@ -679,11 +681,11 @@ Filecoin DSN协议可以在允许验证的任何共识协议之上实现Filecoin
 
 **定义6.1** 如果下面的条件是满足的，则在时刻t 矿工Mi 是Leader：
 
-![define-6.1.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bedbb54d5c.png)
+![define-6.1.png](https://i.imgur.com/4aQXkwL.png)
 
 其中rand(t)是在时刻t，可以从区块链中提取出来的公开的随机变量，Pt>i是Mi的功率。考虑对于任意的m，L是H(m)的大小，H是一种安全的加密散列函数，其中（m)Mi是Mi对消息m的签名，使得：
 
-![define-6.1-2.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bedceda485.png)
+![define-6.1-2.png](https://i.imgur.com/YfEIiCP.png)
 
 在图13中，我们描述了矿工（ProveElect）和网络节点（VerifyElect）之间的协议。这种选举方案提供了三个属性：公平，保密和公开的可验证性。
 
@@ -697,7 +699,7 @@ Mi)/2L必须是从（0，1）均匀选择的实数，因此，可能使得方程
 
 i)/2L，来说服一个有效的验证者。鉴于前面的观点，有能力的攻击者在不拥有获胜秘密秘钥的情况下不能生成证明。
 
-![filecoin-图13.png](http://chainx.org/Uploads/Editor/Picture/2017-08-22/599bedeee732c.png)
+![filecoin-图13.png](https://i.imgur.com/Eh9bbWp.png)
 
 
 
